@@ -1,1 +1,145 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+  /* Colors */
+  --color-bg: #fff8f0;
+  --color-surface: #ffffff;
+  --color-text: #14213d;
+  --color-muted: #6f7480;
+  --color-primary: #ff6b57;
+  --color-primary-dark: #d94a3a;
+  --color-accent-gold: #ffc857;
+  --color-accent-blue: #5bc0eb;
+  --color-line: #eadfd4;
+
+  /* Typography */
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.75rem;
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  /* Radius & shadow */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --shadow-soft: 0 20px 50px rgba(20, 33, 61, 0.13);
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  margin: 0;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: var(--fs-3xl);
+  letter-spacing: -1.5px;
+}
+
+h2 {
+  font-size: var(--fs-2xl);
+  letter-spacing: -1px;
+}
+
+p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Layout utility */
+.container {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 12px 28px rgba(255, 107, 87, 0.28);
+}
+
+.btn-dark {
+  background: var(--color-text);
+  color: white;
+  box-shadow: 0 10px 25px rgba(20, 33, 61, 0.18);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text);
+}
+
+/* Card surface */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}

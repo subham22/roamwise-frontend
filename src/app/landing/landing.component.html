@@ -1,0 +1,42 @@
+<section class="hero container">
+  <div class="eyebrow">
+    <span class="eyebrow-dot"></span>
+    Real places. Real timings. Zero spreadsheet chaos.
+  </div>
+
+  <h1>Your next trip, <span class="highlight">actually planned.</span></h1>
+
+  <p class="hero-copy">
+    Tell us where you're going. Roamwise turns your preferences into a realistic
+    day-by-day plan with live places, travel times, weather, budgets and a map you can edit.
+  </p>
+
+  <div class="planner card">
+    <div class="planner-grid">
+      <div class="field">
+        <label>Where to?</label>
+        <input type="text" placeholder="Jaipur, Rajasthan" />
+      </div>
+
+      <app-dropdown
+        label="Duration"
+        [options]="['3 days', '4 days', '5 days', '7 days']"
+        selected="3 days">
+      </app-dropdown>
+
+      <app-dropdown
+        label="Budget"
+        [options]="['₹25,000', '₹40,000', '₹60,000+']"
+        selected="₹25,000">
+      </app-dropdown>
+
+      <app-dropdown
+        label="Trip vibe"
+        [options]="['Food + culture', 'Relaxed', 'Adventure', 'Family']"
+        selected="Food + culture">
+      </app-dropdown>
+
+      <button class="btn btn-primary go">Build my trip →</button>
+    </div>
+  </div>
+</section>

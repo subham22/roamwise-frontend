@@ -1,0 +1,12 @@
+<div class="field select-field" [class.open]="isOpen">
+  <label>{{ label }}</label>
+  <div class="select-display" (click)="toggleOpen()">
+    {{ selected }}
+  </div>
+
+  <ul class="options-list" *ngIf="isOpen">
+    <li *ngFor="let option of options" (click)="selectOption(option)">
+      {{ option }}
+    </li>
+  </ul>
+</div>
