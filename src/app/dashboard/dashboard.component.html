@@ -1,0 +1,34 @@
+<section class="dashboard container">
+  <div class="dashboard-header">
+    <h1>Your Trips</h1>
+    <button class="btn btn-primary" routerLink="/plan">+ New Trip</button>
+  </div>
+
+  @if (tripsResource.isLoading()) {
+    <p class="status-text">Loading your trips...</p>
+  }
+
+  @if (tripsResource.error()) {
+    <p class="status-text error-text">Couldn't load your trips. Try refreshing.</p>
+  }
+
+  @if (tripsResource.value() && tripsResource.value()!.length === 0) {
+    <div class="empty-state card">
+      <p>You haven't planned any trips yet.</p>
+      <button class="btn btn-primary" routerLink="/plan">Plan your first trip</button>
+    </div>
+  }
+
+  <div class="trip-grid">
+    @for (trip of tripsResource.value(); track trip.tripId) {
+      <a class="trip-card card" [routerLink]="['/app/trips', trip.tripId]">
+        <div class="trip-card-header">
+          <span class="trip-destination">{{ trip.destination }}</span>
+          <span class="trip-budget">₹{{ trip.budget }}</span>
+        </div>
+        <p class="trip-origin">From {{ trip.origin }}</p>
+        <p class="trip-dates">{{ trip.startDate }} → {{ trip.endDate }}</p>
+      </a>
+    }
+  </div>
+</section>

@@ -1,3 +1,4 @@
+<app-public-nav></app-public-nav>
 <section class="hero container">
   <div class="eyebrow">
     <span class="eyebrow-dot"></span>
@@ -12,31 +13,54 @@
   </p>
 
   <div class="planner card">
-    <div class="planner-grid">
+    <div class="planner-grid" [formGroup]="tripForm">
       <div class="field">
         <label>Where to?</label>
-        <input type="text" placeholder="Jaipur, Rajasthan" />
+        <input type="text" placeholder="Jaipur, Rajasthan"  formControlName="destination"/>
       </div>
 
-      <app-dropdown
-        label="Duration"
-        [options]="['3 days', '4 days', '5 days', '7 days']"
-        selected="3 days">
-      </app-dropdown>
+     <app-dropdown formControlName="duration" label="Duration" [options]="['3 days', '4 days', '5 days', '7 days']"></app-dropdown>
 
       <app-dropdown
         label="Budget"
         [options]="['₹25,000', '₹40,000', '₹60,000+']"
-        selected="₹25,000">
+        formControlName="budget"
+        >
       </app-dropdown>
 
       <app-dropdown
         label="Trip vibe"
         [options]="['Food + culture', 'Relaxed', 'Adventure', 'Family']"
-        selected="Food + culture">
+        formControlName="vibe"
+        >
       </app-dropdown>
 
-      <button class="btn btn-primary go">Build my trip →</button>
+      <button class="btn btn-primary go" (click)="buildTrip()">Build my trip →</button>
     </div>
+  </div>
+</section>
+
+<section class="features container" id="features">
+  <div class="section-head">
+    <h2>Not another itinerary that only looks good in a chat window.</h2>
+    <p class="lead">Roamwise grounds every plan in structured travel data and gives you control after generation.</p>
+  </div>
+
+  <div class="feature-grid">
+    <article class="feature card">
+      <div class="icon">⌖</div>
+      <h3>Plans grounded in real places</h3>
+      <p>Opening hours, ratings, maps and travel time are checked before they become part of your day.</p>
+    </article>
+    <article class="feature card">
+      <div class="icon">↕</div>
+      <h3>Edit it like a playlist</h3>
+      <p>Drag activities between days, replace a stop, or build around one must-do experience.</p>
+    </article>
+    <article class="feature card">
+      <div class="icon">☁</div>
+      <h3>Weather-aware suggestions</h3>
+      <p>Rainy afternoon? Your plan shifts indoor attractions forward instead of ignoring the forecast.</p>
+    </article>
   </div>
 </section>

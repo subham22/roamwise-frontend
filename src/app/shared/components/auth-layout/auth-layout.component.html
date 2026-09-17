@@ -1,0 +1,14 @@
+<nav class="app-nav container">
+  <a class="brand" routerLink="/app/dashboard">
+    <span class="brand-mark">↗</span> Roamwise
+  </a>
+
+  <div class="nav-actions">
+    <span class="user-email">{{ authService.userEmail()?.sub }}</span>
+    <button class="btn btn-ghost" (click)="onLogout()">Log out</button>
+  </div>
+</nav>
+
+<main class="container">
+  <router-outlet></router-outlet>
+</main>

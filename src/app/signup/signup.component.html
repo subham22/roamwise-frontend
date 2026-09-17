@@ -1,0 +1,46 @@
+<app-public-nav></app-public-nav>
+
+<section class="auth-page container">
+  <div class="auth-card card">
+    <h1>Create your account</h1>
+    <p class="auth-subtext">Start planning trips that actually work.</p>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+        @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+          <span class="error-text">Enter a valid email</span>
+        }
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="At least 8 characters" />
+        @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+          <span class="error-text">Password must be at least 8 characters</span>
+        }
+      </div>
+
+      <div class="field">
+        <label>Confirm password</label>
+        <input type="password" formControlName="confirmPassword" placeholder="Re-enter your password" />
+        @if (signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched) {
+          <span class="error-text">Passwords don't match</span>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p class="server-error">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn btn-primary" [disabled]="signupForm.invalid || isLoading()">
+        {{ isLoading() ? 'Creating account...' : 'Sign up' }}
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      Already have an account? <a routerLink="/login">Log in</a>
+    </p>
+  </div>
+</section>

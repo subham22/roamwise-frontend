@@ -1,0 +1,129 @@
+<div class="trip-detail-page">
+    @if (tripResource.isLoading()) {
+    <p class="status-text">Loading trip...</p>
+    }
+
+    @if (tripResource.error()) {
+    <p class="status-text error-text">Couldn't load this trip.</p>
+    }
+
+    @if (tripResource.value()) {
+    <div class="trip-header">
+        <div>
+            <h1>{{ tripResource.value()!.destination }}</h1>
+            <p class="trip-meta">
+                From {{ tripResource.value()!.origin }} ·
+                {{ tripResource.value()!.startDate }} →
+                {{ tripResource.value()!.endDate }}
+            </p>
+        </div>
+        <div class="trip-budget-badge">
+            ₹{{ tripResource.value()!.budget }}
+        </div>
+    </div>
+
+    <div class="days-list">
+        <div class="add-day-section">
+            @if (!showAddDayForm()) {
+            @if (!isPastTrip()) {
+            <button class="btn btn-ghost" (click)="showAddDayForm.set(true)">+ Add Day</button>
+            } @else {
+            <p class="past-trip-notice">This trip has already ended — editing is disabled.</p>
+            }
+            } @else {
+            <form [formGroup]="createDayForm" (ngSubmit)="onSaveDay()" class="inline-form card">
+                <div class="field">
+                    <label>Day number</label>
+                    <input type="number" formControlName="dayNo" min="1" />
+                </div>
+                <div class="field">
+                    <label>Date</label>
+                    <input type="date" formControlName="dayDate" [min]="tripResource.value()?.startDate"
+                        [max]="tripResource.value()?.endDate" />
+                </div>
+                <div class="inline-form-actions">
+                    <button type="submit" class="btn btn-primary" [disabled]="createDayForm.invalid">
+                        Add
+                    </button>
+                    <button type="button" class="btn btn-ghost" (click)="showAddDayForm.set(false)">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+            }
+        </div>
+        @for (day of tripResource.value()!.days; track day.id) {
+        <div class="day-card card">
+            <div class="day-card-header">
+  <h2>Day {{ day.dayNo }}</h2>
+  <span class="day-date">{{ day.dayDate }}</span>
+  <div class="day-actions">
+    <button class="btn-icon" (click)="onEditDay(day)">✎</button>
+    <button class="btn-icon-delete" (click)="onDeleteDay(day.id)">✕</button>
+  </div>
+</div>
+
+            @if (day.activities.length === 0) {
+            <p class="empty-day">No activities added yet.</p>
+            }
+
+            <div class="activity-list">
+                @for (activity of day.activities; track activity.id) {
+                <div class="activity-row">
+  <div class="activity-main">
+    <span class="activity-time">{{ activity.startTime }} – {{ activity.endTime }}</span>
+    <div class="activity-info">
+      <span class="activity-name">{{ activity.name }}</span>
+      @if (activity.notes) {
+        <span class="activity-notes">{{ activity.notes }}</span>
+      }
+    </div>
+  </div>
+  <div class="activity-actions">
+    <button class="btn-icon" (click)="onEditActivity(day.id, activity)">✎</button>
+    <button class="btn-icon-delete" (click)="onDeleteActivity(activity.id)">✕</button>
+  </div>
+</div>
+                }
+            </div>
+            <div class="add-activity-section">
+                @if (openActivityFormForDay() !== day.id) {
+                <button class="btn btn-ghost btn-sm" (click)="openActivityFormForDay.set(day.id)">+ Add
+                    Activity</button>
+                } @else {
+                <form [formGroup]="createActivityForm" (ngSubmit)="onSaveActivity(day.id)"
+                    class="inline-form activity-inline-form">
+                    <div class="field">
+                        <label>Name</label>
+                        <input type="text" formControlName="name" placeholder="Hawa Mahal" />
+                    </div>
+                    <div class="field">
+                        <label>Start time</label>
+                        <input type="time" formControlName="startTime" />
+                    </div>
+                    <div class="field">
+                        <label>End time</label>
+                        <input type="time" formControlName="endTime" />
+                    </div>
+                    <div class="field">
+                        <label>Sequence</label>
+                        <input type="number" formControlName="sequence" min="1" />
+                    </div>
+                    <div class="field field-wide">
+                        <label>Notes</label>
+                        <input type="text" formControlName="notes" placeholder="Optional" />
+                    </div>
+                    <div class="inline-form-actions">
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="createActivityForm.invalid">Add</button>
+                        <button type="button" class="btn btn-ghost"
+                            (click)="openActivityFormForDay.set(null)">Cancel</button>
+                    </div>
+                </form>
+                }
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

@@ -1,0 +1,40 @@
+<div class="new-trip-page">
+  <h1>Plan a new trip</h1>
+  <p class="page-subtext">Tell us the basics — you can add days and activities after.</p>
+
+  <form [formGroup]="tripForm" (ngSubmit)="onSubmit()" class="card trip-form">
+    <div class="field">
+      <label>Origin</label>
+      <input type="text" formControlName="origin" placeholder="Delhi" />
+    </div>
+
+    <div class="field">
+      <label>Destination</label>
+      <input type="text" formControlName="destination" placeholder="Jaipur, Rajasthan" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Start date</label>
+        <input type="date" formControlName="startDate" [min] = "today" />
+      </div>
+      <div class="field">
+        <label>End date</label>
+        <input type="date" formControlName="endDate" [min]="tripForm.get('startDate')?.value || today"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Budget (₹)</label>
+      <input type="number" formControlName="budget" placeholder="25000" />
+    </div>
+
+    @if (errorMessage()) {
+      <p class="server-error">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" class="btn btn-primary" [disabled]="tripForm.invalid || isLoading()">
+      {{ isLoading() ? 'Creating...' : 'Create trip' }}
+    </button>
+  </form>
+</div>
