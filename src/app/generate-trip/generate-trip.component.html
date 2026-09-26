@@ -1,0 +1,72 @@
+<div class="generate-page">
+  <h1>Generate an itinerary</h1>
+  <p class="page-subtext">Tell us the basics — AI will build a day-by-day plan using real places.</p>
+
+  @if (!isGenerating()) {
+    <form [formGroup]="tripForm" (ngSubmit)="onSubmit()" class="card trip-form">
+      <div class="field">
+        <label>Origin</label>
+         <app-place-autocomplete formControlName="origin"></app-place-autocomplete>
+        @if (tripForm.get('origin')?.invalid && tripForm.get('origin')?.touched) {
+          <span class="error-text">Origin is required</span>
+        }
+      </div>
+      <div class="field">
+        <label>Destination</label>
+         <app-place-autocomplete formControlName="destination"></app-place-autocomplete>
+        @if (tripForm.get('destination')?.invalid && tripForm.get('destination')?.touched) {
+          <span class="error-text">Destination is required</span>
+        }
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Start date</label>
+          <input type="date" formControlName="startDate" [min]="today"/>
+          @if (tripForm.get('startDate')?.invalid && tripForm.get('startDate')?.touched) {
+            <span class="error-text">Start date is required</span>
+          }
+        </div>
+        <div class="field">
+          <label>End date</label>
+          <input type="date" formControlName="endDate" [min]="tripForm.get('startDate')?.value" />
+          @if (tripForm.get('endDate')?.invalid && tripForm.get('endDate')?.touched) {
+            <span class="error-text">End date is required</span>
+          }
+        </div>
+      </div>
+      <div class="field">
+        <label>Budget (₹)</label>
+        <input type="number" formControlName="budget" placeholder="25000" />
+        @if (tripForm.get('budget')?.invalid && tripForm.get('budget')?.touched) {
+          <span class="error-text">Budget is required</span>
+        }
+      </div>
+      <div class="field">
+        <label>Interests</label>
+        <input type="text" formControlName="interest" placeholder="food and culture" />
+        @if (tripForm.get('interest')?.invalid && tripForm.get('interest')?.touched) {
+          <span class="error-text">Tell us your interests</span>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p class="server-error">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn btn-primary" [disabled]="tripForm.invalid">
+        Generate itinerary
+      </button>
+    </form>
+  } @else {
+    <div class="card generating-state">
+      <div class="spinner"></div>
+      <h2>Building your itinerary...</h2>
+      <p class="status-text">
+        {{ jobStatus() === 'RUNNING' ? 'AI is planning your days and activities' : 'Starting generation' }}
+      </p>
+      @if (errorMessage()) {
+        <p class="server-error">{{ errorMessage() }}</p>
+      }
+    </div>
+  }
+</div>

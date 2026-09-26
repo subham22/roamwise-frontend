@@ -2,12 +2,17 @@ import { httpResource } from '@angular/common/http';
 import {
     Component,
     computed,
+    effect,
     inject,
     input,
     OnInit,
     signal,
 } from '@angular/core';
-import { TripDetail, TripDay } from '../shared/models/trip.interface';
+import {
+    TripDetail,
+    TripDay,
+    TripActivity,
+} from '../shared/models/trip.interface';
 import {
     FormBuilder,
     FormControl,
@@ -15,13 +20,31 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
+import {
+    CdkDrag,
+    CdkDragDrop,
+    CdkDropList,
+    moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { DayService } from '../shared/services/day.service';
 import { ActivityService } from '../shared/services/activity.service';
 import { ActivityResponse } from '../shared/models/day.interface';
+import { DayWeatherComponent } from '../day-weather/day-weather.component';
+import { response } from 'express';
+import { environment } from '../../environments/environment';
+import { DayMapComponent } from '../shared/components/day-map/day-map.component';
+import { TripService } from '../shared/services/trip.service';
+import { FeasibilityIssue } from '../shared/models/activity.interface';
 
 @Component({
     selector: 'app-trip-detail',
-    imports: [ReactiveFormsModule],
+    imports: [
+        ReactiveFormsModule,
+        DayWeatherComponent,
+        CdkDrag,
+        CdkDropList,
+        DayMapComponent,
+    ],
     templateUrl: './trip-detail.component.html',
     styleUrl: './trip-detail.component.css',
 })
@@ -29,6 +52,9 @@ export class TripDetailComponent implements OnInit {
     private fb = inject(FormBuilder);
     private dayService = inject(DayService);
     private activityService = inject(ActivityService);
+    private tripService = inject(TripService);
+
+    readonly environment = environment;
 
     tripId = input<string>('');
     showAddDayForm = signal(false);
@@ -40,6 +66,115 @@ export class TripDetailComponent implements OnInit {
 
     editingDayId = signal<number | null>(null);
     editingActivityId = signal<number | null>(null);
+
+    selectedPhotoUrl = signal<string | null>(null);
+
+    showShareModal = signal(false);
+    shareEmail = signal('');
+    shareUrl = signal<string | null>(null);
+    isSharing = signal(false);
+
+    showReplanModal = signal(false);
+    budgetDelta = signal(0);
+    interest = signal('');
+    replanDiff = signal<string[] | null>(null);
+    replanProposalId = signal<number | null>(null);
+    isReplanning = signal(false);
+
+    feasibilityByDay = signal<Map<number, FeasibilityIssue[]>>(new Map());
+
+    constructor() {
+        effect(() => {
+            const trip = this.tripResource.value();
+            if (trip) {
+                trip.days.forEach((day) => this.loadFeasibilityForDay(day.id));
+            }
+        });
+    }
+
+    openReplanModal() {
+        this.showReplanModal.set(true);
+        this.replanDiff.set(null);
+    }
+
+    onPropose() {
+        this.isReplanning.set(true);
+        this.tripService
+            .proposeReplan(Number(this.tripId()), {
+                budgetDelta: this.budgetDelta(),
+                interest: this.interest()
+            })
+            .subscribe({
+                next: (res) => {
+                    this.replanDiff.set(res.diff);
+                    this.replanProposalId.set(res.id);
+                    this.isReplanning.set(false);
+                },
+                error: () => this.isReplanning.set(false),
+            });
+    }
+
+    onConfirmReplan() {
+        const id = this.replanProposalId();
+        if (!id) return;
+        this.tripService.confirmReplan(id).subscribe({
+            next: () => {
+                this.showReplanModal.set(false);
+                this.interest.set('');
+                this.budgetDelta.set(0);
+                this.tripResource.reload();
+            },
+        });
+    }
+
+    loadFeasibilityForDay(dayId: number) {
+        return this.dayService.getDayFeasibility(dayId).subscribe({
+            next: (response) => {
+                this.feasibilityByDay.update((current) => {
+                    const updated = new Map(current);
+                    updated.set(dayId, response);
+                    return updated;
+                });
+            },
+        });
+    }
+
+    issuesFor(activityId: number): FeasibilityIssue[] {
+        const allIssues = Array.from(this.feasibilityByDay().values()).flat();
+        return allIssues.filter((i) => i.activityId === activityId);
+    }
+
+    openPhoto(photoReference: string) {
+        this.selectedPhotoUrl.set(
+            environment.apiUrl +
+                '/places/photo?photoReference=' +
+                photoReference,
+        );
+    }
+
+    closePhoto() {
+        this.selectedPhotoUrl.set(null);
+    }
+
+    openShareModal() {
+        this.showShareModal.set(true);
+        this.shareUrl.set(null);
+    }
+
+    onShare() {
+        this.isSharing.set(true);
+        const email = this.shareEmail().trim() || null;
+        this.tripService.shareTrip(Number(this.tripId()), email).subscribe({
+            next: (res) => {
+                this.shareUrl.set(res.shareUrl);
+                this.isSharing.set(false);
+            },
+        });
+    }
+
+    copyShareLink() {
+        navigator.clipboard.writeText(this.shareUrl()!);
+    }
 
     ngOnInit(): void {
         this.createDayForm = this.fb.group({
@@ -76,7 +211,10 @@ export class TripDetailComponent implements OnInit {
         const id = this.editingDayId();
         const request$ = id
             ? this.dayService.updateDay(id, this.createDayForm.value)
-            : this.dayService.createDay(this.tripId(), this.createDayForm.value);
+            : this.dayService.createDay(
+                  this.tripId(),
+                  this.createDayForm.value,
+              );
 
         request$.subscribe({
             next: () => {
@@ -106,8 +244,14 @@ export class TripDetailComponent implements OnInit {
         if (this.createActivityForm.invalid) return;
         const id = this.editingActivityId();
         const request$ = id
-            ? this.activityService.updateActivity(id, this.createActivityForm.value)
-            : this.activityService.createActivity(dayId, this.createActivityForm.value);
+            ? this.activityService.updateActivity(
+                  id,
+                  this.createActivityForm.value,
+              )
+            : this.activityService.createActivity(
+                  dayId,
+                  this.createActivityForm.value,
+              );
 
         request$.subscribe({
             next: () => {
@@ -122,6 +266,48 @@ export class TripDetailComponent implements OnInit {
     onDeleteActivity(activityId: number) {
         this.activityService.deleteActivity(activityId).subscribe({
             next: () => this.tripResource.reload(),
+        });
+    }
+
+    sortedActivities(day: TripDay) {
+        return day.activities;
+    }
+
+    onActivityDrop(event: CdkDragDrop<TripActivity[]>, day: TripDay) {
+        const activities = this.sortedActivities(day);
+        moveItemInArray(activities, event.previousIndex, event.currentIndex);
+
+        const orderedIds = activities.map((act) => act.id);
+        this.activityService.reorderActivities(day.id, orderedIds).subscribe({
+            next: (response) => {
+                this.tripResource.reload();
+            },
+        });
+    }
+
+    downloadPdf() {
+        this.tripService.exportPdf(Number(this.tripId())).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${this.tripResource.value()?.destination ?? 'trip'}.pdf`;
+                link.click();
+                window.URL.revokeObjectURL(url);
+            },
+        });
+    }
+
+    downloadIcs() {
+        this.tripService.exportIcs(Number(this.tripId())).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${this.tripResource.value()?.destination ?? 'trip'}.ics`;
+                link.click();
+                window.URL.revokeObjectURL(url);
+            },
         });
     }
 }

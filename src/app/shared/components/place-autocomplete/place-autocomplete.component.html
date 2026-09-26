@@ -1,0 +1,16 @@
+<div class="autocomplete-wrapper">
+  <input
+    type="text"
+    [value]="value()"
+    (input)="onInput($any($event.target).value)"
+    placeholder="Jaipur, Rajasthan"
+  />
+
+  @if (isOpen()) {
+    <ul class="suggestions-list">
+      @for (suggestion of suggestions(); track suggestion) {
+        <li (click)="selectSuggestion(suggestion)">{{ suggestion }}</li>
+      }
+    </ul>
+  }
+</div>

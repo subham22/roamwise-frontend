@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "roamwise",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,14 +7,16 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
+    "serve:ssr:roamwise": "node dist/roamwise/server/server.mjs"
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^21.2.14",
     "@angular/common": "^21.2.23",
     "@angular/compiler": "^21.2.23",
     "@angular/core": "^21.2.23",
     "@angular/forms": "^21.2.23",
+    "@angular/google-maps": "^21.2.14",
     "@angular/platform-browser": "^21.2.23",
     "@angular/platform-browser-dynamic": "^21.2.23",
     "@angular/platform-server": "^21.2.23",

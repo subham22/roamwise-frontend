@@ -16,7 +16,7 @@
     <div class="planner-grid" [formGroup]="tripForm">
       <div class="field">
         <label>Where to?</label>
-        <input type="text" placeholder="Jaipur, Rajasthan"  formControlName="destination"/>
+          <app-place-autocomplete formControlName="destination"></app-place-autocomplete>
       </div>
 
      <app-dropdown formControlName="duration" label="Duration" [options]="['3 days', '4 days', '5 days', '7 days']"></app-dropdown>
@@ -36,6 +36,31 @@
       </app-dropdown>
 
       <button class="btn btn-primary go" (click)="buildTrip()">Build my trip →</button>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works container" id="how">
+  <div class="section-head">
+    <h2>How it works</h2>
+    <p class="lead">From a rough idea to a real, editable itinerary in minutes.</p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step-card card">
+      <div class="step-number">1</div>
+      <h3>Tell us your plans</h3>
+      <p>Destination, dates, budget, and what you're into.</p>
+    </div>
+    <div class="step-card card">
+      <div class="step-number">2</div>
+      <h3>AI builds it from real places</h3>
+      <p>Grounded in real ratings, hours, and reviews — not guesses.</p>
+    </div>
+    <div class="step-card card">
+      <div class="step-number">3</div>
+      <h3>Edit anything, anytime</h3>
+      <p>Drag activities, swap a stop, adjust your budget — it's yours to shape.</p>
     </div>
   </div>
 </section>

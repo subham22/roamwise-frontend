@@ -1,0 +1,6 @@
+<google-map height="300px" width="100%" [center]="center()" [zoom]="12"  [options]="mapOptions()">
+  
+  @for (marker of markerPositions(); track marker.title) {
+    <map-marker [position]="marker.position" [title]="marker.title"  ></map-marker>
+  }
+</google-map>

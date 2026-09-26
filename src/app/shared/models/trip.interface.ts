@@ -15,6 +15,22 @@ export interface TripDetail {
 	origin: string;
 	startDate: string;
 	tripId: number;
+	accommodations: AccommodationResponse[]
+	budgetStayPct: string;
+	budgetFoodPct: string;
+	budgetActivitiesPct: string;
+	budgetTransportPct: string;
+	travelModeSuggestion?: string;
+	
+}
+
+export interface AccommodationResponse {
+	id: number;
+	hotelName: string;
+	checkInDate: string;
+	checkOutDate: string;
+	pricePerNight: number;
+	notes: string;
 }
 
 export interface TripDay {
@@ -31,6 +47,11 @@ export interface TripActivity {
 	notes: string;
 	sequence: number;
 	startTime: string;
+	latitude: number;
+	longitude: number;
+	photoReference: string;
+	isHiddenGem?: boolean,
+	reviewSnippet?: string | null
 }
 
 export interface CreateTripRequest {
@@ -39,6 +60,7 @@ export interface CreateTripRequest {
 	startDate: string;
 	endDate: string;
 	budget: number;
+	interests?: string
 }
 
 export interface TripDraft {

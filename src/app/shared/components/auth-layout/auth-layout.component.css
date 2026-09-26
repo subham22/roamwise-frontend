@@ -1,0 +1,48 @@
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  color: var(--color-text);
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--color-text);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  transform: rotate(-3deg);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-email {
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  padding: 6px 14px;
+  background: var(--color-bg);
+  border-radius: 999px;
+}
+
+main {
+  padding-top: 32px;
+}

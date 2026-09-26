@@ -3,7 +3,7 @@ import {
     provideZoneChangeDetection,
     provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
 import {
@@ -12,13 +12,19 @@ import {
 } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { baseUrlInterceptor } from './shared/interceptors/auth.interceptor';
+import { responseInterceptor } from './shared/interceptors/response.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideZonelessChangeDetection(),
-        provideRouter(routes),
+        provideRouter(routes,
+            withInMemoryScrolling({
+            anchorScrolling: 'enabled',
+            scrollPositionRestoration: 'enabled'
+        })
+        ),
         provideClientHydration(withEventReplay()),
-        provideHttpClient(withInterceptors([baseUrlInterceptor])),
-        provideRouter(routes, withComponentInputBinding())
+        provideHttpClient(withInterceptors([baseUrlInterceptor, responseInterceptor])),
+        provideRouter(routes, withComponentInputBinding()),
     ],
 };

@@ -8,6 +8,10 @@ import { SignupComponent } from './signup/signup.component';
 import { redirectIfAuthenticatedGuard } from './shared/gaurds/redirect.gaurd';
 import { TripDetailComponent } from './trip-detail/trip-detail.component';
 import { NewTripComponent } from './new-trip/new-trip.component';
+import { GenerateTripComponent } from './generate-trip/generate-trip.component';
+import { SharedTripComponent } from './shared-trip/shared-trip.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
@@ -16,7 +20,8 @@ export const routes: Routes = [
     },
     {
         path: 'login',
-        component: LoginComponent
+        component: LoginComponent,
+        canActivate: [redirectIfAuthenticatedGuard]
     },
     {
         path: 'app',
@@ -25,12 +30,16 @@ export const routes: Routes = [
         children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'trips/:tripId', component: TripDetailComponent},
-            { path: 'new-trip', component: NewTripComponent }
+            { path: 'new-trip', component: NewTripComponent },
+            { path: 'generate', component: GenerateTripComponent}
         ]
-    }, 
+    },
+    { path: 'shared/trips/:shareToken', component: SharedTripComponent },
     {
         path: 'signup',
         component: SignupComponent,
         canActivate: [redirectIfAuthenticatedGuard]
-    }
+    },
+    { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [redirectIfAuthenticatedGuard] },
+    { path: 'reset-password', component: ResetPasswordComponent }
 ];

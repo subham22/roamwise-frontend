@@ -1,0 +1,11 @@
+app-day-map {
+  display: block;
+  border: 3px solid red;
+  min-height: 300px;
+  min-width: 100%;
+}
+
+:host {
+  display: block;
+  width: 100%;
+}

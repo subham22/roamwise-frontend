@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CreateDayRequest, DayResponse } from '../models/day.interface';
 import { Observable } from 'rxjs';
+import { FeasibilityIssue } from '../models/activity.interface';
 
 @Injectable({
     providedIn: 'root',
@@ -20,5 +21,9 @@ export class DayService {
 
     updateDay(dayId: number, request: CreateDayRequest): Observable<DayResponse> {
         return this.http.put<DayResponse>(`/days/${dayId}`, request);
+    }
+
+    getDayFeasibility(dayId: number): Observable<FeasibilityIssue[]> {
+        return this.http.get<FeasibilityIssue[]>(`/days/${dayId}/feasibility`);
     }
 }

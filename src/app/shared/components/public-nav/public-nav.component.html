@@ -4,12 +4,16 @@
   </a>
 
   <div class="nav-links">
-    <a routerLink="/#" fragment="how">How it works</a>
-    <a href="#features" fragment="features">Features</a>
+    <a routerLink="/" fragment="how">How it works</a>
+    <a routerLink="/" fragment="features">Features</a>
   </div>
 
   <div class="nav-actions">
-    <a routerLink="/login" class="btn btn-ghost">Sign in</a>
-    <a routerLink="/signup" class="btn btn-dark">Get started</a>
+    @if (authService.isLoggedIn()) {
+      <a routerLink="/app/dashboard" class="btn btn-dark">Go to dashboard</a>
+    } @else {
+      <a routerLink="/login" class="btn btn-ghost">Sign in</a>
+      <a routerLink="/signup" class="btn btn-dark">Get started</a>
+    }
   </div>
 </nav>

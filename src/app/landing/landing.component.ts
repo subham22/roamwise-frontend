@@ -5,10 +5,11 @@ import { FormGroup, FormControl, Validators, FormBuilder, ReactiveFormsModule } 
 import { TripDraftService } from '../shared/services/trip-draft.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
+import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
 
 @Component({
   selector: 'app-landing',
-  imports: [DropdownComponent, PublicNavComponent, ReactiveFormsModule],
+  imports: [DropdownComponent, PublicNavComponent, ReactiveFormsModule, PlaceAutocompleteComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css'
 })

@@ -22,4 +22,8 @@ export class ActivityService {
     updateActivity(activityId: number, request: CreateActivityRequest): Observable<ActivityResponse> {
         return this.http.put<ActivityResponse>(`/activities/${activityId}`, request);
     }
+
+    reorderActivities(dayId: number, orderedActivityIds: number[]): Observable<void> {
+        return this.http.put<void>(`/days/${dayId}/activities/reorder`, orderedActivityIds);
+    }
 }

@@ -12,20 +12,64 @@ export class AuthService {
     private http = inject(HttpClient);
     private platformId = inject(PLATFORM_ID);
 
-    token = signal<string | null>(isPlatformBrowser(this.platformId) ? localStorage.getItem('token'): null);
+    token = signal<string | null>(this.getToken());
 
-    userEmail = signal<string | null>(
-        this.token() ? this.extractEmail() : null
-    )
+    getToken(): string | null {
+        if (!isPlatformBrowser(this.platformId)) {
+            return null;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return null;
+        }
+
+        const decodedToken = this.decodeToken(token);
+        const expTime = decodedToken?.exp;
+
+        if (!expTime) {
+            return token;
+        }
+
+        return Date.now() < expTime * 1000 ? token : null;
+    }
+
+    userEmail = computed(() => this.token() ? this.extractEmail() : null);
+
+    forgotPassword(email: string): Observable<void> {
+        return this.http.post<void>('/auth/forgot-password', { email });
+    }
+
+    resetPassword(token: string, newPassword: string): Observable<void> {
+        return this.http.post<void>('/auth/reset-password', { token, newPassword });
+    }
+
+    private decodeToken(token: string | null): { exp?: number; sub?: string } | null {
+        if (!token) {
+            return null;
+        }
+
+        try {
+            const payload = token.split('.')[1];
+            if (!payload) {
+                return null;
+            }
+
+            const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
+            const paddedPayload = normalizedPayload.padEnd(
+                Math.ceil(normalizedPayload.length / 4) * 4,
+                '='
+            );
+
+            const decoded = atob(paddedPayload);
+            return JSON.parse(decoded);
+        } catch {
+            return null;
+        }
+    }
 
     extractEmail(): string {
-        const payload = this.token()?.split('.')[1];
-        if (!payload) {
-            return '';
-        }
-        const decode = atob(payload);
-        return JSON.parse(decode);
-
+        return this.decodeToken(this.token())?.sub ?? '';
     }
 
     isLoggedIn = computed(() => !!this.token());
@@ -54,4 +98,4 @@ export class AuthService {
             password: password
         })
     }
-} 
+}

@@ -1,8 +1,11 @@
 <section class="dashboard container">
   <div class="dashboard-header">
-    <h1>Your Trips</h1>
-    <button class="btn btn-primary" routerLink="/plan">+ New Trip</button>
+  <h1>Your Trips</h1>
+  <div class="header-actions">
+    <button class="btn btn-ghost" routerLink="/app/new-trip">+ New Trip</button>
+    <button class="btn btn-primary" routerLink="/app/generate">✨ Generate with AI</button>
   </div>
+</div>
 
   @if (tripsResource.isLoading()) {
     <p class="status-text">Loading your trips...</p>

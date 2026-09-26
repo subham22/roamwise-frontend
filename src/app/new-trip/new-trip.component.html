@@ -5,28 +5,43 @@
   <form [formGroup]="tripForm" (ngSubmit)="onSubmit()" class="card trip-form">
     <div class="field">
       <label>Origin</label>
-      <input type="text" formControlName="origin" placeholder="Delhi" />
+     <app-place-autocomplete formControlName="origin"></app-place-autocomplete>
+      @if (tripForm.get('origin')?.invalid && tripForm.get('origin')?.touched) {
+        <span class="error-text">Origin is required</span>
+      }
     </div>
 
     <div class="field">
       <label>Destination</label>
-      <input type="text" formControlName="destination" placeholder="Jaipur, Rajasthan" />
+      <app-place-autocomplete formControlName="destination"></app-place-autocomplete>
+      @if (tripForm.get('destination')?.invalid && tripForm.get('destination')?.touched) {
+        <span class="error-text">Destination is required</span>
+      }
     </div>
 
     <div class="field-row">
       <div class="field">
         <label>Start date</label>
-        <input type="date" formControlName="startDate" [min] = "today" />
+        <input type="date" formControlName="startDate" [min]="today" />
+        @if (tripForm.get('startDate')?.invalid && tripForm.get('startDate')?.touched) {
+          <span class="error-text">Start date is required</span>
+        }
       </div>
       <div class="field">
         <label>End date</label>
-        <input type="date" formControlName="endDate" [min]="tripForm.get('startDate')?.value || today"/>
+        <input type="date" formControlName="endDate" [min]="tripForm.get('startDate')?.value || today" />
+        @if (tripForm.get('endDate')?.invalid && tripForm.get('endDate')?.touched) {
+          <span class="error-text">End date is required</span>
+        }
       </div>
     </div>
 
     <div class="field">
       <label>Budget (₹)</label>
       <input type="number" formControlName="budget" placeholder="25000" />
+      @if (tripForm.get('budget')?.invalid && tripForm.get('budget')?.touched) {
+        <span class="error-text">Enter a budget greater than 0</span>
+      }
     </div>
 
     @if (errorMessage()) {

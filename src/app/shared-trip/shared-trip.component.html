@@ -1,0 +1,125 @@
+<div class="shared-trip-page">
+  @if (tripResource.isLoading()) {
+    <p class="status-text">Loading trip...</p>
+  }
+
+  @if (tripResource.error()) {
+    <p class="status-text error-text">This link is invalid or the trip no longer exists.</p>
+  }
+
+  @if (tripResource.value()) {
+    <div class="shared-banner">
+      <span class="brand-mark">↗</span> Roamwise — shared itinerary
+    </div>
+
+    <div class="trip-header">
+      <div>
+        <h1>{{ tripResource.value()!.destination }}</h1>
+        <p class="trip-meta">
+          From {{ tripResource.value()!.origin }} ·
+          {{ tripResource.value()!.startDate }} → {{ tripResource.value()!.endDate }}
+        </p>
+      </div>
+      <div class="trip-budget-badge">₹{{ tripResource.value()!.budget }}</div>
+    </div>
+    @if (tripResource.value()!.travelModeSuggestion) {
+    <div class="travel-mode-note">
+        🚌 {{ tripResource.value()!.travelModeSuggestion }}
+    </div>
+}
+
+    @if (tripResource.value()!.accommodations && tripResource.value()!.accommodations.length > 0) {
+      <div class="accommodations-section">
+        <h2>Where they're staying</h2>
+        <div class="accommodation-list">
+          @for (stay of tripResource.value()!.accommodations; track stay.id) {
+            <div class="accommodation-card card">
+              <div class="accommodation-header">
+                <span class="hotel-name">🏨 {{ stay.hotelName }}</span>
+                <span class="hotel-price">₹{{ stay.pricePerNight }}/night</span>
+              </div>
+              <p class="stay-dates">{{ stay.checkInDate }} → {{ stay.checkOutDate }}</p>
+              @if (stay.notes) {
+                <p class="stay-notes">{{ stay.notes }}</p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="days-list">
+      @for (day of tripResource.value()!.days; track day.id) {
+        <div class="day-card card">
+          <div class="day-card-header">
+            <h2>Day {{ day.dayNo }}</h2>
+            <span class="day-date">{{ day.dayDate }}</span>
+          </div>
+
+          @if (day.activities.length === 0) {
+            <p class="empty-day">No activities added yet.</p>
+          }
+
+          <div class="activity-list">
+            @for (activity of day.activities; track activity.id; let i = $index) {
+              <div class="activity-row">
+                <div class="activity-content">
+                  @if (activity.photoReference) {
+                                        <img
+                                            class="activity-thumb"
+                                            [src]="
+                                                environment.apiUrl +
+                                                '/places/photo?photoReference=' +
+                                                activity.photoReference
+                                            "
+                                            alt="{{ activity.name }}"
+                                            (click)="
+                                                openPhoto(
+                                                    activity.photoReference
+                                                )
+                                            "
+                                        />
+                                    }
+                  <div class="activity-main">
+                    <span class="activity-time">{{ activity.startTime }} – {{ activity.endTime }}</span>
+                    <div class="activity-info">
+  <span class="activity-name">
+    {{ activity.name }}
+    @if (activity.isHiddenGem) {
+      <span class="hidden-gem-badge">💎 Hidden gem</span>
+    }
+  </span>
+  @if (activity.notes) {
+    <span class="activity-notes">{{ activity.notes }}</span>
+  }
+</div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+       @if (selectedPhotoUrl()) {
+                <div class="photo-modal-backdrop" (click)="closePhoto()">
+                    <div
+                        class="photo-modal-content"
+                        (click)="$event.stopPropagation()"
+                    >
+                        <img [src]="selectedPhotoUrl()!" alt="Activity photo" />
+                        <button
+                            class="photo-modal-close"
+                            (click)="closePhoto()"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            }
+    </div>
+
+    <div class="shared-footer">
+      <p>Planned with Roamwise. <a routerLink="/">Build your own trip →</a></p>
+    </div>
+  }
+</div>

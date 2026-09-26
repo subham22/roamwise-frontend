@@ -9,10 +9,11 @@ import {
 import { TripService } from '../shared/services/trip.service';
 import { Router } from '@angular/router';
 import { TripDraftService } from '../shared/services/trip-draft.service';
+import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
 
 @Component({
     selector: 'app-new-trip',
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, PlaceAutocompleteComponent],
     templateUrl: './new-trip.component.html',
     styleUrl: './new-trip.component.css',
 })

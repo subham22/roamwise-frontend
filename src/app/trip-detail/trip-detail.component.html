@@ -1,129 +1,594 @@
 <div class="trip-detail-page">
     @if (tripResource.isLoading()) {
-    <p class="status-text">Loading trip...</p>
+        <p class="status-text">Loading trip...</p>
     }
 
     @if (tripResource.error()) {
-    <p class="status-text error-text">Couldn't load this trip.</p>
+        <p class="status-text error-text">Couldn't load this trip.</p>
     }
 
     @if (tripResource.value()) {
-    <div class="trip-header">
-        <div>
-            <h1>{{ tripResource.value()!.destination }}</h1>
-            <p class="trip-meta">
-                From {{ tripResource.value()!.origin }} ·
-                {{ tripResource.value()!.startDate }} →
-                {{ tripResource.value()!.endDate }}
-            </p>
-        </div>
-        <div class="trip-budget-badge">
-            ₹{{ tripResource.value()!.budget }}
-        </div>
-    </div>
-
-    <div class="days-list">
-        <div class="add-day-section">
-            @if (!showAddDayForm()) {
-            @if (!isPastTrip()) {
-            <button class="btn btn-ghost" (click)="showAddDayForm.set(true)">+ Add Day</button>
-            } @else {
-            <p class="past-trip-notice">This trip has already ended — editing is disabled.</p>
-            }
-            } @else {
-            <form [formGroup]="createDayForm" (ngSubmit)="onSaveDay()" class="inline-form card">
-                <div class="field">
-                    <label>Day number</label>
-                    <input type="number" formControlName="dayNo" min="1" />
-                </div>
-                <div class="field">
-                    <label>Date</label>
-                    <input type="date" formControlName="dayDate" [min]="tripResource.value()?.startDate"
-                        [max]="tripResource.value()?.endDate" />
-                </div>
-                <div class="inline-form-actions">
-                    <button type="submit" class="btn btn-primary" [disabled]="createDayForm.invalid">
-                        Add
-                    </button>
-                    <button type="button" class="btn btn-ghost" (click)="showAddDayForm.set(false)">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-            }
-        </div>
-        @for (day of tripResource.value()!.days; track day.id) {
-        <div class="day-card card">
-            <div class="day-card-header">
-  <h2>Day {{ day.dayNo }}</h2>
-  <span class="day-date">{{ day.dayDate }}</span>
-  <div class="day-actions">
-    <button class="btn-icon" (click)="onEditDay(day)">✎</button>
-    <button class="btn-icon-delete" (click)="onDeleteDay(day.id)">✕</button>
-  </div>
-</div>
-
-            @if (day.activities.length === 0) {
-            <p class="empty-day">No activities added yet.</p>
-            }
-
-            <div class="activity-list">
-                @for (activity of day.activities; track activity.id) {
-                <div class="activity-row">
-  <div class="activity-main">
-    <span class="activity-time">{{ activity.startTime }} – {{ activity.endTime }}</span>
-    <div class="activity-info">
-      <span class="activity-name">{{ activity.name }}</span>
-      @if (activity.notes) {
-        <span class="activity-notes">{{ activity.notes }}</span>
-      }
-    </div>
-  </div>
-  <div class="activity-actions">
-    <button class="btn-icon" (click)="onEditActivity(day.id, activity)">✎</button>
-    <button class="btn-icon-delete" (click)="onDeleteActivity(activity.id)">✕</button>
-  </div>
-</div>
-                }
+        <div class="trip-header">
+            <div>
+                <h1>{{ tripResource.value()!.destination }}</h1>
+                <p class="trip-meta">
+                    From {{ tripResource.value()!.origin }} ·
+                    {{ tripResource.value()!.startDate }} →
+                    {{ tripResource.value()!.endDate }}
+                </p>
             </div>
-            <div class="add-activity-section">
-                @if (openActivityFormForDay() !== day.id) {
-                <button class="btn btn-ghost btn-sm" (click)="openActivityFormForDay.set(day.id)">+ Add
-                    Activity</button>
-                } @else {
-                <form [formGroup]="createActivityForm" (ngSubmit)="onSaveActivity(day.id)"
-                    class="inline-form activity-inline-form">
-                    <div class="field">
-                        <label>Name</label>
-                        <input type="text" formControlName="name" placeholder="Hawa Mahal" />
-                    </div>
-                    <div class="field">
-                        <label>Start time</label>
-                        <input type="time" formControlName="startTime" />
-                    </div>
-                    <div class="field">
-                        <label>End time</label>
-                        <input type="time" formControlName="endTime" />
-                    </div>
-                    <div class="field">
-                        <label>Sequence</label>
-                        <input type="number" formControlName="sequence" min="1" />
-                    </div>
-                    <div class="field field-wide">
-                        <label>Notes</label>
-                        <input type="text" formControlName="notes" placeholder="Optional" />
-                    </div>
-                    <div class="inline-form-actions">
-                        <button type="submit" class="btn btn-primary"
-                            [disabled]="createActivityForm.invalid">Add</button>
-                        <button type="button" class="btn btn-ghost"
-                            (click)="openActivityFormForDay.set(null)">Cancel</button>
-                    </div>
-                </form>
-                }
+            <button class="btn btn-ghost" (click)="openShareModal()">
+                🔗 Share
+            </button>
+            <button class="btn btn-ghost" (click)="downloadPdf()">
+                📄 Export PDF
+            </button>
+            <button class="btn btn-ghost" (click)="downloadIcs()">
+                📅 Add to Calendar
+            </button>
+            <div class="trip-budget-badge">
+                ₹{{ tripResource.value()!.budget }}
             </div>
+            <button class="btn btn-ghost" (click)="openReplanModal()">
+                💰 Adjust budget
+            </button>
         </div>
+        @if (tripResource.value()!.travelModeSuggestion) {
+            <div class="travel-mode-note">
+                🚌 {{ tripResource.value()!.travelModeSuggestion }}
+            </div>
         }
-    </div>
+
+        @if (
+            tripResource.value()!.accommodations &&
+            tripResource.value()!.accommodations.length > 0
+        ) {
+            <div class="accommodations-section">
+                <h2>Where you're staying</h2>
+                <div class="accommodation-list">
+                    @for (
+                        stay of tripResource.value()!.accommodations;
+                        track stay.id
+                    ) {
+                        <div class="accommodation-card card">
+                            <div class="accommodation-header">
+                                <span class="hotel-name"
+                                    >🏨 {{ stay.hotelName }}</span
+                                >
+                                <span class="hotel-price"
+                                    >₹{{ stay.pricePerNight }}/night</span
+                                >
+                            </div>
+                            <p class="stay-dates">
+                                {{ stay.checkInDate }} → {{ stay.checkOutDate }}
+                            </p>
+                            @if (stay.notes) {
+                                <p class="stay-notes">{{ stay.notes }}</p>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (tripResource.value()!.budgetStayPct) {
+            <div class="budget-section card">
+                <h2>Budget breakdown</h2>
+                <div class="budget-bars">
+                    <div class="budget-row">
+                        <span class="budget-label">🏨 Stay</span>
+                        <div class="budget-bar-track">
+                            <div
+                                class="budget-bar-fill stay"
+                                [style.width]="
+                                    tripResource.value()!.budgetStayPct
+                                "
+                            ></div>
+                        </div>
+                        <span class="budget-pct">{{
+                            tripResource.value()!.budgetStayPct
+                        }}</span>
+                    </div>
+                    <div class="budget-row">
+                        <span class="budget-label">🍽️ Food</span>
+                        <div class="budget-bar-track">
+                            <div
+                                class="budget-bar-fill food"
+                                [style.width]="
+                                    tripResource.value()!.budgetFoodPct
+                                "
+                            ></div>
+                        </div>
+                        <span class="budget-pct">{{
+                            tripResource.value()!.budgetFoodPct
+                        }}</span>
+                    </div>
+                    <div class="budget-row">
+                        <span class="budget-label">🎟️ Activities</span>
+                        <div class="budget-bar-track">
+                            <div
+                                class="budget-bar-fill activities"
+                                [style.width]="
+                                    tripResource.value()!.budgetActivitiesPct
+                                "
+                            ></div>
+                        </div>
+                        <span class="budget-pct">{{
+                            tripResource.value()!.budgetActivitiesPct
+                        }}</span>
+                    </div>
+                    <div class="budget-row">
+                        <span class="budget-label">🚗 Transport</span>
+                        <div class="budget-bar-track">
+                            <div
+                                class="budget-bar-fill transport"
+                                [style.width]="
+                                    tripResource.value()!.budgetTransportPct
+                                "
+                            ></div>
+                        </div>
+                        <span class="budget-pct">{{
+                            tripResource.value()!.budgetTransportPct
+                        }}</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="days-list">
+            <div class="add-day-section">
+                @if (!showAddDayForm()) {
+                    @if (!isPastTrip()) {
+                        <button
+                            class="btn btn-ghost"
+                            (click)="showAddDayForm.set(true)"
+                        >
+                            + Add Day
+                        </button>
+                    } @else {
+                        <p class="past-trip-notice">
+                            This trip has already ended — editing is disabled.
+                        </p>
+                    }
+                } @else {
+                    <form
+                        [formGroup]="createDayForm"
+                        (ngSubmit)="onSaveDay()"
+                        class="inline-form card"
+                    >
+                        <div class="field">
+                            <label>Day number</label>
+                            <input
+                                type="number"
+                                formControlName="dayNo"
+                                min="1"
+                            />
+                            @if (
+                                createDayForm.get("dayNo")?.invalid &&
+                                createDayForm.get("dayNo")?.touched
+                            ) {
+                                <span class="error-text"
+                                    >Day number is required</span
+                                >
+                            }
+                        </div>
+                        <div class="field">
+                            <label>Date</label>
+                            <input
+                                type="date"
+                                formControlName="dayDate"
+                                [min]="tripResource.value()?.startDate"
+                                [max]="tripResource.value()?.endDate"
+                            />
+                            @if (
+                                createDayForm.get("dayDate")?.invalid &&
+                                createDayForm.get("dayDate")?.touched
+                            ) {
+                                <span class="error-text">Date is required</span>
+                            }
+                        </div>
+                        <div class="inline-form-actions">
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                [disabled]="createDayForm.invalid"
+                            >
+                                {{ editingDayId() ? "Save" : "Add" }}
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-ghost"
+                                (click)="
+                                    showAddDayForm.set(false);
+                                    editingDayId.set(null);
+                                    createDayForm.reset()
+                                "
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                }
+            </div>
+            @for (day of tripResource.value()!.days; track day.id) {
+                <div class="day-card card">
+                    <div class="day-card-header">
+                        <h2>Day {{ day.dayNo }}</h2>
+                        <span class="day-date">{{ day.dayDate }}</span>
+                        <app-day-weather
+                            [tripId]="tripId()"
+                            [dayId]="day.id"
+                        ></app-day-weather>
+                        <div class="day-actions">
+                            <button class="btn-icon" (click)="onEditDay(day)">
+                                ✎
+                            </button>
+                            <button
+                                class="btn-icon-delete"
+                                (click)="onDeleteDay(day.id)"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                    <app-day-map [day]="day"></app-day-map>
+                    @if (day.activities.length === 0) {
+                        <p class="empty-day">No activities added yet.</p>
+                    }
+
+                    <div
+                        class="activity-list"
+                        cdkDropList
+                        [cdkDropListData]="sortedActivities(day)"
+                        (cdkDropListDropped)="onActivityDrop($event, day)"
+                    >
+                        @for (
+                            activity of sortedActivities(day);
+                            track activity.id;
+                            let i = $index
+                        ) {
+                            @for (
+                                issue of issuesFor(activity.id);
+                                track issue.message
+                            ) {
+                                <div class="feasibility-item">
+                                    ⚠️ {{ issue.message }}
+                                </div>
+                            }
+                            <div class="activity-row" cdkDrag>
+                                <div class="activity-content">
+                                    @if (activity.photoReference) {
+                                        <img
+                                            class="activity-thumb"
+                                            [src]="
+                                                environment.apiUrl +
+                                                '/places/photo?photoReference=' +
+                                                activity.photoReference
+                                            "
+                                            alt="{{ activity.name }}"
+                                            (click)="
+                                                openPhoto(
+                                                    activity.photoReference
+                                                )
+                                            "
+                                        />
+                                    }
+                                    <div class="activity-main">
+                                        <span class="activity-time"
+                                            >{{ activity.startTime }} –
+                                            {{ activity.endTime }}</span
+                                        >
+                                        <div class="activity-info">
+                                            <span class="activity-name">
+                                                {{ activity.name }}
+                                                @if (activity.isHiddenGem) {
+                                                    <span
+                                                        class="hidden-gem-badge"
+                                                        >💎 Hidden gem</span
+                                                    >
+                                                }
+                                            </span>
+                                            @if (activity.notes) {
+                                                <span class="activity-notes">{{
+                                                    activity.notes
+                                                }}</span>
+                                            }
+                                            @if (activity.reviewSnippet) {
+                                                <p class="review-snippet">
+                                                    💬 "{{
+                                                        activity.reviewSnippet
+                                                    }}"
+                                                </p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-actions">
+                                    <button
+                                        class="btn-icon"
+                                        (click)="
+                                            onEditActivity(day.id, activity)
+                                        "
+                                    >
+                                        ✎
+                                    </button>
+                                    <button
+                                        class="btn-icon-delete"
+                                        (click)="onDeleteActivity(activity.id)"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="add-activity-section">
+                        @if (openActivityFormForDay() !== day.id) {
+                            <button
+                                class="btn btn-ghost btn-sm"
+                                (click)="openActivityFormForDay.set(day.id)"
+                            >
+                                + Add Activity
+                            </button>
+                        } @else {
+                            <form
+                                [formGroup]="createActivityForm"
+                                (ngSubmit)="onSaveActivity(day.id)"
+                                class="inline-form activity-inline-form"
+                            >
+                                <div class="field">
+                                    <label>Name</label>
+                                    <input
+                                        type="text"
+                                        formControlName="name"
+                                        placeholder="Hawa Mahal"
+                                    />
+                                    @if (
+                                        createActivityForm.get("name")
+                                            ?.invalid &&
+                                        createActivityForm.get("name")?.touched
+                                    ) {
+                                        <span class="error-text"
+                                            >Name is required</span
+                                        >
+                                    }
+                                </div>
+                                <div class="field">
+                                    <label>Start time</label>
+                                    <input
+                                        type="time"
+                                        formControlName="startTime"
+                                    />
+                                    @if (
+                                        createActivityForm.get("startTime")
+                                            ?.invalid &&
+                                        createActivityForm.get("startTime")
+                                            ?.touched
+                                    ) {
+                                        <span class="error-text"
+                                            >Start time is required</span
+                                        >
+                                    }
+                                </div>
+                                <div class="field">
+                                    <label>End time</label>
+                                    <input
+                                        type="time"
+                                        formControlName="endTime"
+                                    />
+                                    @if (
+                                        createActivityForm.get("endTime")
+                                            ?.invalid &&
+                                        createActivityForm.get("endTime")
+                                            ?.touched
+                                    ) {
+                                        <span class="error-text"
+                                            >End time is required</span
+                                        >
+                                    }
+                                </div>
+                                <div class="field">
+                                    <label>Sequence</label>
+                                    <input
+                                        type="number"
+                                        formControlName="sequence"
+                                        min="1"
+                                    />
+                                    @if (
+                                        createActivityForm.get("sequence")
+                                            ?.invalid &&
+                                        createActivityForm.get("sequence")
+                                            ?.touched
+                                    ) {
+                                        <span class="error-text"
+                                            >Sequence is required</span
+                                        >
+                                    }
+                                </div>
+                                <div class="field field-wide">
+                                    <label>Notes</label>
+                                    <input
+                                        type="text"
+                                        formControlName="notes"
+                                        placeholder="Optional"
+                                    />
+                                </div>
+                                <div class="inline-form-actions">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        [disabled]="createActivityForm.invalid"
+                                    >
+                                        {{
+                                            editingActivityId() ? "Save" : "Add"
+                                        }}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-ghost"
+                                        (click)="
+                                            openActivityFormForDay.set(null);
+                                            editingActivityId.set(null);
+                                            createActivityForm.reset()
+                                        "
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (selectedPhotoUrl()) {
+                <div class="photo-modal-backdrop" (click)="closePhoto()">
+                    <div
+                        class="photo-modal-content"
+                        (click)="$event.stopPropagation()"
+                    >
+                        <img [src]="selectedPhotoUrl()!" alt="Activity photo" />
+                        <button
+                            class="photo-modal-close"
+                            (click)="closePhoto()"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            }
+
+            @if (showShareModal()) {
+                <div
+                    class="photo-modal-backdrop"
+                    (click)="showShareModal.set(false)"
+                >
+                    <div
+                        class="share-modal-content"
+                        (click)="$event.stopPropagation()"
+                    >
+                        <h3>Share this trip</h3>
+
+                        @if (!shareUrl()) {
+                            <input
+                                type="email"
+                                [value]="shareEmail()"
+                                (input)="
+                                    shareEmail.set($any($event.target).value)
+                                "
+                                placeholder="Recipient's email (optional)"
+                            />
+                            <button
+                                class="btn btn-primary"
+                                (click)="onShare()"
+                                [disabled]="isSharing()"
+                            >
+                                {{
+                                    isSharing() ? "Sharing..." : "Generate link"
+                                }}
+                            </button>
+                        } @else {
+                            <p class="share-link-text">{{ shareUrl() }}</p>
+                            <button
+                                class="btn btn-primary"
+                                (click)="copyShareLink()"
+                            >
+                                Copy link
+                            </button>
+                        }
+
+                        <button
+                            class="btn btn-ghost"
+                            (click)="showShareModal.set(false)"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (showReplanModal()) {
+            <div
+                class="photo-modal-backdrop"
+                (click)="showReplanModal.set(false)"
+            >
+                <div
+                    class="share-modal-content"
+                    (click)="$event.stopPropagation()"
+                >
+                    <h3>Adjust trip budget</h3>
+
+                    @if (!replanDiff()) {
+                        <input
+                            type="number"
+                            [disabled]="isReplanning()"
+                            [value]="budgetDelta()"
+                            (input)="
+                                budgetDelta.set(+$any($event.target).value)
+                            "
+                            placeholder="e.g. -5000 to reduce, 3000 to increase"
+                        />
+                        <input
+                            type="text"
+                            [disabled]="isReplanning()"
+                            [value]="interest()"
+                            (input)="interest.set($any($event.target).value)"
+                            placeholder="e.g. food and culture"
+                        />
+                        <button
+                            class="btn btn-primary"
+                            (click)="onPropose()"
+                            [disabled]="isReplanning()"
+                        >
+                            {{
+                                isReplanning()
+                                    ? "Thinking..."
+                                    : "Suggest changes"
+                            }}
+                        </button>
+                    } @else {
+                        @if (replanDiff()!.length === 0) {
+                            <p class="no-diff-text">
+                                The AI couldn't find meaningful changes to hit
+                                that target — try a larger adjustment.
+                            </p>
+                            <button
+                                class="btn btn-ghost"
+                                (click)="showReplanModal.set(false)"
+                            >
+                                Close
+                            </button>
+                        } @else {
+                            <ul class="replan-diff-list">
+                                @for (change of replanDiff(); track change) {
+                                    <li
+                                        [class.diff-added]="
+                                            change.startsWith('Added')
+                                        "
+                                        [class.diff-removed]="
+                                            change.startsWith('Removed')
+                                        "
+                                    >
+                                        {{ change }}
+                                    </li>
+                                }
+                            </ul>
+                            <button
+                                class="btn btn-primary"
+                                (click)="onConfirmReplan()"
+                            >
+                                Apply changes
+                            </button>
+                            <button
+                                class="btn btn-ghost"
+                                (click)="showReplanModal.set(false)"
+                            >
+                                Discard
+                            </button>
+                        }
+                    }
+                </div>
+            </div>
+        }
     }
 </div>

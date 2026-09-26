@@ -1,0 +1,5 @@
+@if (weatherResource.isLoading()) {
+  <span class="weather-tag">...</span>
+} @else if (weatherResource.value()) {
+  <span class="weather-tag">🌤️ {{ weatherResource.value()?.weather }}</span>
+}
