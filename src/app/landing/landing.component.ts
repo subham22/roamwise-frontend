@@ -38,6 +38,27 @@ export class LandingComponent implements OnInit {
             description: 'Plan a real, editable trip in minutes. Roamwise builds itineraries from real places, live weather, travel times and budgets, then lets you change anything.',
             path: '/',
         });
+
+        this.seoService.setJsonLd({
+            '@context': 'https://schema.org',
+            '@graph': [
+                {
+                    '@type': 'WebSite',
+                    '@id': 'https://roamwise.live/#website',
+                    url: 'https://roamwise.live/',
+                    name: 'Roamwise',
+                    description: 'AI trip planner that builds editable itineraries from real places, weather and travel times.',
+                    inLanguage: 'en-IN',
+                    publisher: { '@id': 'https://roamwise.live/#organization' }
+                },
+                {
+                    '@type': 'Organization',
+                    '@id': 'https://roamwise.live/#organization',
+                    name: 'Roamwise',
+                    url: 'https://roamwise.live/'
+                }
+            ]
+        });
     }
 
 
