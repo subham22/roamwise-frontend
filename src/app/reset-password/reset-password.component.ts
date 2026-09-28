@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { PublicNavComponent } from '../shared/components/public-nav/public-nav.component';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -22,10 +23,16 @@ export class ResetPasswordComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private seo = inject(SeoService)
 
   ngOnInit(): void {
     this.token = this.route.snapshot.queryParamMap.get('token');
-
+     this.seo.update({
+        title: 'Set a new password',
+        description: 'Choose a new password for your Roamwise account.',
+        path: '/reset-password',
+        noindex: true,
+      });
     this.resetForm = this.fb.group({
       newPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
       confirmPassword: new FormControl('', [Validators.required]),

@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../shared/services/auth.service';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
     selector: 'app-forgot-password',
@@ -21,10 +22,18 @@ export class ForgotPasswordComponent implements OnInit {
     isLoading = signal<boolean>(false);
 
     private service = inject(AuthService);
+    private seo = inject(SeoService);
 
     ngOnInit(): void {
         this.forgotForm = new FormGroup({
             email: new FormControl('', [Validators.email]),
+        });
+
+        this.seo.update({
+            title: 'Forgot password',
+            description: 'Reset your Roamwise password. Enter your email and we will send you a reset link.',
+            path: '/forgot-password',
+            noindex: true,
         });
     }
 
