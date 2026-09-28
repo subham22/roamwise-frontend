@@ -59,7 +59,7 @@ export class SeoService {
     const script = this.doc.createElement('script');
     script.setAttribute('type', 'application/ld+json');
     script.setAttribute('id', 'seo-jsonld');
-    script.textContent = JSON.stringify(data);
+    script.textContent = JSON.stringify(data).replace(/</g, '\\u003c');
     this.doc.head.appendChild(script);
   }
 
