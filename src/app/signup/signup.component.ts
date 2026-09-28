@@ -12,6 +12,7 @@ import { Router, RouterModule } from '@angular/router';
 import { PublicNavComponent } from '../shared/components/public-nav/public-nav.component';
 import { ValidationError } from '@angular/forms/signals';
 import { AuthService } from '../shared/services/auth.service';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
     selector: 'app-signup',
@@ -28,8 +29,16 @@ export class SignupComponent implements OnInit {
     private authService = inject(AuthService);
     private router = inject(Router);
     private fb = inject(FormBuilder);
+    private seo = inject(SeoService);
+
 
     ngOnInit(): void {
+        this.seo.update({
+			title: 'Sign up',
+			description: 'Signup to Roamwise to plan and manage your trips.',
+			path: '/signup',
+			noindex: true,
+		});
         this.signupForm = this.fb.group(
             {
                 email: ['', [Validators.required, Validators.email]],

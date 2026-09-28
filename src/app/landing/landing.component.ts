@@ -6,6 +6,7 @@ import { TripDraftService } from '../shared/services/trip-draft.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
   selector: 'app-landing',
@@ -20,6 +21,7 @@ export class LandingComponent implements OnInit {
     private service = inject(TripDraftService);
     private router = inject(Router);
     private authService = inject(AuthService);
+    private seoService = inject(SeoService);
 
     tripForm!: FormGroup;
 
@@ -30,7 +32,14 @@ export class LandingComponent implements OnInit {
             duration: new FormControl('3 days', [Validators.required]),
             budget: new FormControl('₹25,000', [Validators.required]),
         })
+
+        this.seoService.update({
+            title: 'AI Trip Planner for India',
+            description: 'Plan a real, editable trip in minutes. Roamwise builds itineraries from real places, live weather, travel times and budgets, then lets you change anything.',
+            path: '/',
+        });
     }
+
 
     buildTrip() {
         if (this.tripForm.valid) {

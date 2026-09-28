@@ -4,6 +4,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TripDraftService } from '../shared/services/trip-draft.service';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
   selector: 'app-login',
@@ -25,12 +26,20 @@ export class LoginComponent implements OnInit{
 
 	private service = inject(AuthService);
 	private draftService = inject(TripDraftService);
+	private seo = inject(SeoService);
 
 	ngOnInit(): void {
 		this.loginForm = this.fb.group({
 			email: new FormControl('', [Validators.email, Validators.required]),
 			password: new FormControl('', [Validators.required])
 		})
+
+		this.seo.update({
+			title: 'Log in',
+			description: 'Log in to Roamwise to plan and manage your trips.',
+			path: '/login',
+			noindex: true,
+		});
 	}
 
 	onSubmit() {
