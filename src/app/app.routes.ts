@@ -16,12 +16,12 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 export const routes: Routes = [
     {
         path: '',
-        component: LandingComponent
+        component: LandingComponent,
     },
     {
         path: 'login',
         component: LoginComponent,
-        canActivate: [redirectIfAuthenticatedGuard]
+        canActivate: [redirectIfAuthenticatedGuard],
     },
     {
         path: 'app',
@@ -29,17 +29,35 @@ export const routes: Routes = [
         canActivate: [AuthGaurd],
         children: [
             { path: 'dashboard', component: DashboardComponent },
-            { path: 'trips/:tripId', component: TripDetailComponent},
+            { path: 'trips/:tripId', component: TripDetailComponent },
             { path: 'new-trip', component: NewTripComponent },
-            { path: 'generate', component: GenerateTripComponent}
-        ]
+            { path: 'generate', component: GenerateTripComponent },
+        ],
     },
     { path: 'shared/trips/:shareToken', component: SharedTripComponent },
     {
         path: 'signup',
         component: SignupComponent,
-        canActivate: [redirectIfAuthenticatedGuard]
+        canActivate: [redirectIfAuthenticatedGuard],
     },
-    { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [redirectIfAuthenticatedGuard] },
-    { path: 'reset-password', component: ResetPasswordComponent }
+    {
+        path: 'forgot-password',
+        component: ForgotPasswordComponent,
+        canActivate: [redirectIfAuthenticatedGuard],
+    },
+    { path: 'reset-password', component: ResetPasswordComponent },
+    {
+        path: 'guides',
+        loadComponent: () =>
+            import('./shared/components/guides/guides-list/guides-list.component').then(
+                (m) => m.GuidesListComponent,
+            ),
+    },
+    {
+        path: 'guides/:slug',
+        loadComponent: () =>
+            import('./shared/components/guides/guide-detail/guide-detail.component').then(
+                (m) => m.GuideDetailComponent,
+            ),
+    },
 ];

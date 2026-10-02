@@ -1,0 +1,31 @@
+<app-public-nav></app-public-nav>
+
+<main class="container guides-page">
+  <header class="guides-head">
+    <div class="section-label">Destination Guides</div>
+    <h1>India trip guides, built for real travel.</h1>
+    <p class="guides-sub">Curated day-by-day itineraries — browse one, or build your own with AI in minutes.</p>
+  </header>
+
+  @if (guides.isLoading()) {
+    <p class="muted">Loading guides…</p>
+  } @else if (guides.error()) {
+    <p class="muted">Couldn't load guides right now.</p>
+  } @else {
+    <div class="guide-grid">
+      @for (guide of guides.value(); track guide.slug) {
+        <a class="guide-card" [routerLink]="['/guides', guide.slug]">
+          @if (guide.heroImageUrl) {
+            <div class="guide-card-img" [style.backgroundImage]="'url(' + apiUrl + '/places/photo?photoReference=' + guide.heroImageUrl + ')'"></div>
+          } @else {
+            <div class="guide-card-img placeholder"></div>
+          }
+          <div class="guide-card-body">
+            <h3>{{ guide.title }}</h3>
+            <p>{{ guide.destination }}</p>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</main>

@@ -1,0 +1,26 @@
+.guide-detail-page { padding: 40px 0 100px; max-width: 760px; margin: 0 auto; }
+.breadcrumbs { display: flex; gap: 8px; font-size: 13px; color: var(--color-muted); margin-bottom: 24px; }
+.breadcrumbs a { color: var(--color-muted); }
+.breadcrumbs a:hover { color: var(--color-primary); }
+.muted { color: var(--color-muted); padding: 60px 0; text-align: center; }
+
+.hero-img { height: 320px; border-radius: 24px; background-size: cover; background-position: center; margin-bottom: 32px; }
+
+.guide-head h1 { font-size: clamp(32px, 4vw, 48px); letter-spacing: -2px; line-height: 1.08; margin-bottom: 10px; }
+.guide-sub { color: var(--color-muted); font-size: 16px; margin-bottom: 40px; }
+
+.day-block { margin-bottom: 40px; }
+.day-block h2 { font-size: 24px; letter-spacing: -.5px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--color-line); }
+
+.activity { display: flex; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--color-line); }
+.activity:last-child { border-bottom: none; }
+.activity-time { flex-shrink: 0; width: 110px; font-size: 13px; font-weight: 700; color: var(--color-muted); padding-top: 2px; }
+.activity-body h3 { font-size: 17px; display: flex; align-items: center; gap: 8px; }
+.gem-badge { font-size: 11px; font-weight: 700; background: #e9f5dc; color: var(--color-primary); padding: 3px 9px; border-radius: 999px; }
+.activity-notes { color: var(--color-muted); font-size: 14px; margin-top: 6px; }
+.activity-review { font-size: 13px; font-style: italic; color: var(--color-primary-dark); margin-top: 6px; }
+
+.guide-cta { margin-top: 50px; padding: 40px; border-radius: 26px; background: var(--color-primary); color: #fff; text-align: center; }
+.guide-cta h3 { font-size: 24px; margin-bottom: 8px; }
+.guide-cta p { color: rgba(255,255,255,.75); margin-bottom: 20px; }
+.guide-cta .btn-dark { background: #fff; color: var(--color-primary-dark); }

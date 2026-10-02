@@ -1,0 +1,53 @@
+<app-public-nav></app-public-nav>
+
+<main class="container guide-detail-page">
+  @if (guide.isLoading()) {
+    <p class="muted">Loading guide…</p>
+  } @else if (guide.error()) {
+    <p class="muted">Guide not found.</p>
+  } @else if (guide.value(); as g) {
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a routerLink="/">Home</a> <span>/</span>
+      <a routerLink="/guides">Guides</a> <span>/</span>
+      <span>{{ g.title }}</span>
+    </nav>
+
+    @if (g.heroImageUrl) {
+      <div class="hero-img" [style.backgroundImage]="'url(' + apiUrl + '/places/photo?photoReference=' + g.heroImageUrl + ')'"></div>
+    }
+
+    <header class="guide-head">
+      <h1>{{ g.title }}</h1>
+      <p class="guide-sub">{{ g.destination }}</p>
+    </header>
+
+    <div class="day-list">
+      @for (day of g.days; track day.dayNo) {
+        <section class="day-block">
+          <h2>{{ day.dayLabel }}</h2>
+          <div class="activities">
+            @for (activity of day.activities; track activity.sequence) {
+              <div class="activity">
+                <div class="activity-time">{{ activity.startTime }} – {{ activity.endTime }}</div>
+                <div class="activity-body">
+                  <h3>
+                    {{ activity.name }}
+                    @if (activity.isHiddenGem) { <span class="gem-badge">Hidden gem</span> }
+                  </h3>
+                  @if (activity.notes) { <p class="activity-notes">{{ activity.notes }}</p> }
+                  @if (activity.reviewSnippet) { <p class="activity-review">"{{ activity.reviewSnippet }}"</p> }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+    </div>
+
+    <div class="guide-cta">
+      <h3>Want this trip, your way?</h3>
+      <p>Build a fully editable version of this itinerary — swap activities, adjust budget, add your own stops.</p>
+      <a routerLink="/" class="btn btn-dark">Plan with AI →</a>
+    </div>
+  }
+</main>

@@ -8,4 +8,6 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'reset-password', renderMode: RenderMode.Server },
   { path: 'shared/trips/:shareToken', renderMode: RenderMode.Server },
   { path: 'app/**', renderMode: RenderMode.Client },
+  { path: 'guides', renderMode: RenderMode.Server },
+  { path: 'guides/:slug', renderMode: RenderMode.Server },
 ];
