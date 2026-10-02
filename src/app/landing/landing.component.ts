@@ -48,7 +48,6 @@ export class LandingComponent implements OnInit {
                     '@id': 'https://roamwise.live/#website',
                     url: 'https://roamwise.live/',
                     name: 'Roamwise',
-                    logo: 'https://roamwise.live/logo.png',
                     description: 'AI trip planner that builds editable itineraries from real places, weather and travel times.',
                     inLanguage: 'en-IN',
                     publisher: { '@id': 'https://roamwise.live/#organization' }
