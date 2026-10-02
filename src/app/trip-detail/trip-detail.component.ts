@@ -92,7 +92,7 @@ export class TripDetailComponent implements OnInit {
             if (trip) {
                 trip.days.forEach((day) => this.loadFeasibilityForDay(day.id));
                 this.seo.update({
-                    title: 'Trip details | Roamwise',
+                    title: 'Trip details',
                     description: `Trip to ${trip.destination} from ${trip.origin}`,
                     path: `/app/trips/${trip.tripId}`,
                     noindex: true,
