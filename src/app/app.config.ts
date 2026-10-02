@@ -1,6 +1,5 @@
 import {
     ApplicationConfig,
-    provideZoneChangeDetection,
     provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';

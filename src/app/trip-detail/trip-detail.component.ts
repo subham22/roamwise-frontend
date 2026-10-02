@@ -35,6 +35,7 @@ import { environment } from '../../environments/environment';
 import { DayMapComponent } from '../shared/components/day-map/day-map.component';
 import { TripService } from '../shared/services/trip.service';
 import { FeasibilityIssue } from '../shared/models/activity.interface';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
     selector: 'app-trip-detail',
@@ -83,11 +84,19 @@ export class TripDetailComponent implements OnInit {
 
     feasibilityByDay = signal<Map<number, FeasibilityIssue[]>>(new Map());
 
+    private seo = inject(SeoService);
+
     constructor() {
         effect(() => {
             const trip = this.tripResource.value();
             if (trip) {
                 trip.days.forEach((day) => this.loadFeasibilityForDay(day.id));
+                this.seo.update({
+                    title: 'Trip details | Roamwise',
+                    description: `Trip to ${trip.destination} from ${trip.origin}`,
+                    path: `/app/trips/${trip.tripId}`,
+                    noindex: true,
+                })
             }
         });
     }

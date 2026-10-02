@@ -24,7 +24,7 @@ export class SharedTripComponent implements OnInit{
       this.seo.update({
         title: 'Shared Trip',
         description: 'Roamwise to plan and manage your trips.',
-        path: '/signup',
+        path: `/shared/trips/${this.shareToken}`,
         noindex: true,
       });
     }

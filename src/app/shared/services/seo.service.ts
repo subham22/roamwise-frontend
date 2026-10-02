@@ -3,16 +3,19 @@ import { DOCUMENT } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { SeoConfig } from '../models/seo.interface';
+import { AnalyticsService } from './analytics.service';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
   private titleService = inject(Title);
   private meta = inject(Meta);
   private doc = inject(DOCUMENT);
+  private anyalyticsService = inject(AnalyticsService)
 
   private readonly siteName = 'Roamwise';
 
   update(config: SeoConfig): void {
+    
     const fullTitle = `${config.title} | ${this.siteName}`;
     const url = this.absoluteUrl(config.path);
 
@@ -49,7 +52,7 @@ export class SeoService {
       this.meta.removeTag('property="og:image"');
       this.meta.removeTag('name="twitter:image"');
     }
-
+    this.anyalyticsService.pageView();
     // Clear structured data from the previous route; call setJsonLd() after update() if needed
     this.clearJsonLd();
   }

@@ -10,6 +10,7 @@ import { TripService } from '../shared/services/trip.service';
 import { Router } from '@angular/router';
 import { TripDraftService } from '../shared/services/trip-draft.service';
 import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
     selector: 'app-new-trip',
@@ -26,10 +27,17 @@ export class NewTripComponent implements OnInit {
     private tripService = inject(TripService);
     private router = inject(Router);
     private draftService = inject(TripDraftService);
+    private seo = inject(SeoService);
 
     tripForm!: FormGroup;
 
     ngOnInit(): void {
+        this.seo.update({
+            title: 'New Trip',
+            description: 'New Trip',
+            path: '/app/new-trip',
+            noindex: true,
+        })
         this.tripForm = this.fb.group({
             origin: new FormControl('', [Validators.required]),
             destination: new FormControl('', [Validators.required]),

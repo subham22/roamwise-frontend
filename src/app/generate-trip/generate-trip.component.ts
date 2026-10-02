@@ -5,6 +5,7 @@ import { interval, switchMap, takeWhile } from 'rxjs';
 import { JobService } from '../shared/services/job.service';
 import { Router } from '@angular/router';
 import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
+import { SeoService } from '../shared/services/seo.service';
 
 @Component({
   selector: 'app-generate-trip',
@@ -23,6 +24,7 @@ export class GenerateTripComponent implements OnInit {
     private tripService = inject(TripService);
     private jobService = inject(JobService);
     private router = inject(Router);
+    private seo  = inject(SeoService);
 
 
     ngOnInit(): void {
@@ -34,6 +36,13 @@ export class GenerateTripComponent implements OnInit {
           budget: new FormControl(''),
           interest: new FormControl('', Validators.required),
         });
+
+         this.seo.update({
+            title: 'Generate a New Trip',
+            description: 'Generate a New Trip',
+            path: '/app/generate-trip',
+            noindex: true,
+        })
     }
 
     onSubmit() {
