@@ -8,6 +8,7 @@ import { routes } from './app.routes';
 import {
     provideClientHydration,
     withEventReplay,
+    withIncrementalHydration,
 } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { baseUrlInterceptor } from './shared/interceptors/auth.interceptor';
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
             scrollPositionRestoration: 'enabled'
         })
         ),
-        provideClientHydration(withEventReplay()),
+        provideClientHydration(withEventReplay(), withIncrementalHydration()),
         provideHttpClient(withInterceptors([baseUrlInterceptor, responseInterceptor])),
         provideRouter(routes, withComponentInputBinding()),
     ],
