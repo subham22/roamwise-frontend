@@ -16,17 +16,18 @@
         <p class="muted">Couldn't load guides right now.</p>
     } @else {
         <div class="guide-grid">
-           <div class="guide-grid">
-  @for (guide of guides.value(); track guide.slug) {
-    @if ($index < 3) {
-      <app-guide-card [guide]="guide" [priority]="$index < 2" />
-    } @else {
-      @defer (hydrate on viewport) {
-        <app-guide-card [guide]="guide" />
-      }
-    }
-  }
-</div>
-        </div>
+                @for (guide of guides.value(); track guide.slug) {
+                    @if ($index < 3) {
+                        <app-guide-card
+                            [guide]="guide"
+                            [priority]="$index < 2"
+                        />
+                    } @else {
+                        @defer (hydrate on viewport) {
+                            <app-guide-card [guide]="guide" />
+                        }
+                    }
+                }
+            </div>
     }
 </main>
