@@ -14,6 +14,8 @@ import { environment } from '../../../../../environments/environment';
 export class GuideDetailComponent {
   slug = input.required<string>();
 
+  apiUrl = environment.apiUrl;
+
   private seo = inject(SeoService);
 
   guide = httpResource<GuideDetail>(() => `/guides/${this.slug()}`);
