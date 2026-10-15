@@ -43,7 +43,13 @@ export class GuideDetailComponent {
 
   private buildJsonLd(g: GuideDetail) {
     const pageUrl = `${environment.siteUrl}/guides/${g.slug}`;
-    const org = { '@id': `${environment.siteUrl}/#organization` };
+    const org = {
+  '@type': 'Organization',
+  '@id': `${environment.siteUrl}/#organization`,
+  name: 'Roamwise',
+  url: `${environment.siteUrl}/`,
+  logo: `${environment.siteUrl}/logo.png`,
+};
 
     return {
       '@context': 'https://schema.org',
