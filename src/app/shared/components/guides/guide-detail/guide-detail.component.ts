@@ -48,10 +48,10 @@ export class GuideDetailComponent {
     const pageUrl = `${environment.siteUrl}/guides/${g.slug}`;
     const org = {
   '@type': 'Organization',
-  '@id': `${environment.siteUrl}/#organization`,
+  '@id': `${environment.siteUrl}#organization`,
   name: 'Roamwise',
-  url: `${environment.siteUrl}/`,
-  logo: `${environment.siteUrl}/logo.png`,
+  url: `${environment.siteUrl}`,
+  logo: `${environment.siteUrl}logo.png`,
 };
 
     return {
