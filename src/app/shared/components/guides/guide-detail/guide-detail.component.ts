@@ -4,10 +4,11 @@ import { httpResource } from '@angular/common/http';
 import { SeoService } from '../../../services/seo.service';
 import { PublicNavComponent } from '../../public-nav/public-nav.component';
 import { environment } from '../../../../../environments/environment';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-guide-detail',
-  imports: [PublicNavComponent],
+  imports: [PublicNavComponent, RouterModule],
   templateUrl: './guide-detail.component.html',
   styleUrl: './guide-detail.component.css',
 })
