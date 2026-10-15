@@ -6,10 +6,11 @@ import { RouterModule } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
 import { SeoService } from '../../../services/seo.service';
 import { NgOptimizedImage } from '@angular/common';
+import { GuideCardComponent } from '../../guide-card/guide-card.component';
 
 @Component({
   selector: 'app-guides-list',
-  imports: [PublicNavComponent, RouterModule, NgOptimizedImage],
+  imports: [PublicNavComponent, RouterModule, NgOptimizedImage, GuideCardComponent],
   templateUrl: './guides-list.component.html',
   styleUrl: './guides-list.component.css',
 })

@@ -1,0 +1,13 @@
+<a class="guide-card" [routerLink]="['/guides', guide().slug]">
+  @if (guide().heroImageUrl) {
+    <div class="guide-card-img">
+      <img [ngSrc]="photoUrl(guide().heroImageUrl!)" fill [priority]="priority()" [alt]="guide().title" />
+    </div>
+  } @else {
+    <div class="guide-card-img placeholder"></div>
+  }
+  <div class="guide-card-body">
+    <h2>{{ guide().title }}</h2>
+    <p>{{ guide().destination }}</p>
+  </div>
+</a>

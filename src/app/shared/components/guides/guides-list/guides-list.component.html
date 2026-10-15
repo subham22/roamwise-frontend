@@ -16,38 +16,17 @@
         <p class="muted">Couldn't load guides right now.</p>
     } @else {
         <div class="guide-grid">
-            @for (guide of guides.value(); track guide.slug) {
-                <a class="guide-card" [routerLink]="['/guides', guide.slug]">
-                    @if (guide.heroImageUrl) {
-                        @if ($index < 3) {
-                            <div class="guide-card-img">
-                                <img
-                                    [ngSrc]="photoUrl(guide.heroImageUrl)"
-                                    fill
-                                    [alt]="guide.title"
-                                />
-                            </div>
-                        } @else {
-                            @defer (hydrate on viewport) {
-                                <div class="guide-card-img">
-                                    <img
-                                        [ngSrc]="photoUrl(guide.heroImageUrl)"
-                                        fill
-                                        [priority]="$index < 2"
-                                        [alt]="guide.title"
-                                    />
-                                </div>
-                            }
-                        }
-                    } @else {
-                        <div class="guide-card-img placeholder"></div>
-                    }
-                    <div class="guide-card-body">
-                        <h2>{{ guide.title }}</h2>
-                        <p>{{ guide.destination }}</p>
-                    </div>
-                </a>
-            }
+           <div class="guide-grid">
+  @for (guide of guides.value(); track guide.slug) {
+    @if ($index < 3) {
+      <app-guide-card [guide]="guide" [priority]="$index < 2" />
+    } @else {
+      @defer (hydrate on viewport) {
+        <app-guide-card [guide]="guide" />
+      }
+    }
+  }
+</div>
         </div>
     }
 </main>
