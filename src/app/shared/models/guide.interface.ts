@@ -5,6 +5,8 @@ export interface GuideDetail {
 	metaDescription: string;
 	heroImageUrl: string;
 	days: GuideDayResponse[];
+	updatedAt?: string,
+	createdAt?: string
 }
 
 export interface GuideDayResponse {
