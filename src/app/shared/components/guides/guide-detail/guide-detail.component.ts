@@ -5,10 +5,11 @@ import { SeoService } from '../../../services/seo.service';
 import { PublicNavComponent } from '../../public-nav/public-nav.component';
 import { environment } from '../../../../../environments/environment';
 import { RouterModule } from '@angular/router';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-guide-detail',
-  imports: [PublicNavComponent, RouterModule],
+  imports: [PublicNavComponent, RouterModule, NgOptimizedImage],
   templateUrl: './guide-detail.component.html',
   styleUrl: './guide-detail.component.css',
 })
