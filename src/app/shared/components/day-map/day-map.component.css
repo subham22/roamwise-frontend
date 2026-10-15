@@ -9,3 +9,12 @@ app-day-map {
   display: block;
   width: 100%;
 }
+
+.map-placeholder {
+  height: 400px;               /* must match the map's height */
+  display: grid;
+  place-items: center;
+  border-radius: 16px;         /* match the map's corners if it has any */
+  background: var(--color-line);
+  color: var(--color-muted);
+}

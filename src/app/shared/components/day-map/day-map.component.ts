@@ -1,6 +1,7 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { TripDay } from '../../models/trip.interface';
+import { MapsLoaderService } from '../../services/maploader.service';
 
 @Component({
     selector: 'app-day-map',
@@ -11,6 +12,13 @@ import { TripDay } from '../../models/trip.interface';
 })
 export class DayMapComponent {
     day = input.required<TripDay>();
+    mapReady = signal<boolean>(false);
+
+
+
+    constructor(private mapLoader: MapsLoaderService) {
+        this.mapLoader.load().then(() => this.mapReady.set(true));
+    }
 
     markerPositions = computed(
         () =>
