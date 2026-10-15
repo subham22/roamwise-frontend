@@ -67,12 +67,12 @@
         </div>
 
         <div class="guide-cta">
-            <h3>Want this trip, your way?</h3>
+            <h2>: {{ city() }} Trip Planner: Make This Itinerary Your Own</h2>
             <p>
                 Build a fully editable version of this itinerary — swap
                 activities, adjust budget, add your own stops.
             </p>
-            <a routerLink="/app/generate" class="btn btn-dark"
+            <a routerLink="/app/generate" class="btn btn-dark" [queryParams]="{ destination: g.destination }"
                 >Plan with AI →</a
             >
         </div>

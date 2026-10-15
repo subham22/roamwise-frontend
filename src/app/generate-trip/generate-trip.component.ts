@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TripService } from '../shared/services/trip.service';
 import { interval, switchMap, takeWhile } from 'rxjs';
@@ -20,7 +20,9 @@ export class GenerateTripComponent implements OnInit {
     jobStatus = signal<string | null>(null)
     errorMessage = signal<string>('')
     today = new Date().toISOString().split('T')[0];
-
+    
+    destination = input<string>()
+    
     private tripService = inject(TripService);
     private jobService = inject(JobService);
     private router = inject(Router);
@@ -30,7 +32,7 @@ export class GenerateTripComponent implements OnInit {
     ngOnInit(): void {
         this.tripForm = new FormGroup({
           origin: new FormControl('', Validators.required),
-          destination: new FormControl('', Validators.required),
+          destination: new FormControl(this.destination() ?? '', Validators.required),
           startDate: new FormControl(''),
           endDate: new FormControl(''),
           budget: new FormControl(''),

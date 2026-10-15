@@ -1,4 +1,4 @@
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { GuideDetail } from '../../../models/guide.interface';
 import { httpResource } from '@angular/common/http';
 import { SeoService } from '../../../services/seo.service';
@@ -19,6 +19,7 @@ export class GuideDetailComponent {
     apiUrl = environment.apiUrl;
 
     private seo = inject(SeoService);
+    city = computed(() => this.guide.value()?.destination.split(',')[0])
 
     guide = httpResource<GuideDetail>(() => `/guides/${this.slug()}`);
 

@@ -35,7 +35,7 @@ export class LandingComponent implements OnInit {
 
         this.seoService.update({
             title: 'AI Trip Planner for India',
-            description: 'Plan a real, editable India trip in minutes — real places, live weather, travel times and budgets, built by AI.',
+            description: 'Plan an India trip in minutes with Roamwise, the AI trip planner and itinerary planner built on real places, live weather, travel times and INR budgets.',
             path: '/',
             image: '/og-image.jpg',
         });
