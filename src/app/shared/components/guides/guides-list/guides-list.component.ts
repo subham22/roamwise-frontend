@@ -21,6 +21,5 @@ export class GuidesListComponent {
       	title: 'Guides',
         description: 'India trip guides, built for real travel',
         path: '/guides',
-        noindex: true,
     })
 }
