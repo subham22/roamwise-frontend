@@ -121,7 +121,7 @@ textarea {
 }
 
 .btn-primary {
-  background: var(--color-primary);
+  background: var(--color-primary-text);
   color: white;
   box-shadow: 0 12px 28px rgba(255, 107, 87, 0.28);
 }
@@ -156,7 +156,7 @@ textarea {
 .field label {
   display: block;
   font-size: var(--fs-xs);
-  color: #8a817b;
+  color: var(--color-muted);
   font-weight: 700;
   margin-bottom: 5px;
 }
