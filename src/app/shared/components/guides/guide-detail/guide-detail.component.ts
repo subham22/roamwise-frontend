@@ -39,13 +39,13 @@ export class GuideDetailComponent {
   // Turns the Google photo reference into a real, public image URL
   private heroImage(g: GuideDetail): string {
     if (!g.heroImageUrl) {
-      return `${environment.siteUrl}/og-image.jpg`;
+      return `${environment.siteUrl}og-image.jpg`;
     }
-    return `${environment.siteUrl}/api/places/photo?photoReference=${encodeURIComponent(g.heroImageUrl)}`;
+    return `${environment.siteUrl}api/places/photo?photoReference=${encodeURIComponent(g.heroImageUrl)}`;
   }
 
   private buildJsonLd(g: GuideDetail) {
-    const pageUrl = `${environment.siteUrl}/guides/${g.slug}`;
+    const pageUrl = `${environment.siteUrl}guides/${g.slug}`;
     const org = {
   '@type': 'Organization',
   '@id': `${environment.siteUrl}#organization`,
@@ -73,8 +73,8 @@ export class GuideDetailComponent {
         {
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: `${environment.siteUrl}/` },
-            { '@type': 'ListItem', position: 2, name: 'Guides', item: `${environment.siteUrl}/guides` },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${environment.siteUrl}` },
+            { '@type': 'ListItem', position: 2, name: 'Guides', item: `${environment.siteUrl}guides` },
             { '@type': 'ListItem', position: 3, name: g.title, item: pageUrl },
           ],
         },
