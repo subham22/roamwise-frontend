@@ -5,10 +5,11 @@ import { httpResource } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
 import { SeoService } from '../../../services/seo.service';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-guides-list',
-  imports: [PublicNavComponent, RouterModule],
+  imports: [PublicNavComponent, RouterModule, NgOptimizedImage],
   templateUrl: './guides-list.component.html',
   styleUrl: './guides-list.component.css',
 })
@@ -22,4 +23,10 @@ export class GuidesListComponent {
         description: 'India trip guides, built for real travel',
         path: '/guides',
     })
+
+    photoUrl(ref: string): string {
+      return `${this.apiUrl}/places/photo?photoReference=${encodeURIComponent(ref)}`;
+    }
+
+
 }

@@ -13,15 +13,17 @@
     <p class="muted">Couldn't load guides right now.</p>
   } @else {
     <div class="guide-grid">
-      @for (guide of guides.value(); track guide.slug) {
+      @for (guide of guides.value(); track guide.slug;) {
         <a class="guide-card" [routerLink]="['/guides', guide.slug]">
           @if (guide.heroImageUrl) {
-            <div class="guide-card-img" [style.backgroundImage]="'url(' + apiUrl + '/places/photo?photoReference=' + guide.heroImageUrl + ')'"></div>
+            <div class="guide-card-img">
+                <img [ngSrc]="photoUrl(guide.heroImageUrl)" fill [priority]="$index <2" [alt]="guide.title" />
+            </div>
           } @else {
             <div class="guide-card-img placeholder"></div>
           }
           <div class="guide-card-body">
-            <h3>{{ guide.title }}</h3>
+            <h2>{{ guide.title }}</h2>
             <p>{{ guide.destination }}</p>
           </div>
         </a>

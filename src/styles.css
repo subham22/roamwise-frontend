@@ -7,12 +7,13 @@
   --color-bg: #fff8f0;
   --color-surface: #ffffff;
   --color-text: #14213d;
-  --color-muted: #6f7480;
+  --color-muted: #676c78;
   --color-primary: #ff6b57;
   --color-primary-dark: #d94a3a;
   --color-accent-gold: #ffc857;
   --color-accent-blue: #5bc0eb;
   --color-line: #eadfd4;
+  --color-primary-text: #c23a2b;
 
   /* Typography */
   --font-display: 'Manrope', sans-serif;
