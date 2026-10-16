@@ -116,4 +116,23 @@
         </article>
     </div>
 </section>
+
+@defer (hydrate on viewport) {
+  <section class="popular-guides" aria-labelledby="popular-guides-title">
+    <h2 id="popular-guides-title">Popular India Itineraries</h2>
+    <p class="popular-sub">
+      Day-by-day plans with real places, timings and maps. Use one as-is or make it your own.
+    </p>
+
+    @if (featuredGuides().length) {
+      <div class="guide-grid">
+        @for (guide of featuredGuides(); track guide.slug) {
+          <app-guide-card [guide]="guide" />
+        }
+      </div>
+    }
+
+    <a class="all-guides-link" routerLink="/guides">Browse all India itineraries →</a>
+  </section>
+}
 </main>

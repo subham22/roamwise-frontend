@@ -15,7 +15,7 @@ export const AuthGaurd: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
 
 
     if (!isLoggedIn) {
-        router.navigate(["/"]);
+        router.navigate(["/login"]);
     }
 
     return isLoggedIn;
