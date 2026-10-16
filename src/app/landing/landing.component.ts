@@ -9,7 +9,7 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms';
 import { TripDraftService } from '../shared/services/trip-draft.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
 import { SeoService } from '../shared/services/seo.service';
@@ -24,7 +24,8 @@ import { GuideCardComponent } from '../shared/components/guide-card/guide-card.c
     PublicNavComponent,
     ReactiveFormsModule,
     PlaceAutocompleteComponent,
-    GuideCardComponent
+    GuideCardComponent,
+    RouterModule
 ],
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
