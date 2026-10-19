@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import {
     AbstractControl,
     FormBuilder,
@@ -13,10 +13,11 @@ import { PublicNavComponent } from '../shared/components/public-nav/public-nav.c
 import { ValidationError } from '@angular/forms/signals';
 import { AuthService } from '../shared/services/auth.service';
 import { SeoService } from '../shared/services/seo.service';
+import { TurnstileComponent } from '../shared/components/turnstile/turnstile.component';
 
 @Component({
     selector: 'app-signup',
-    imports: [ReactiveFormsModule, RouterModule, PublicNavComponent],
+    imports: [ReactiveFormsModule, RouterModule, PublicNavComponent, TurnstileComponent],
     templateUrl: './signup.component.html',
     styleUrl: './signup.component.css',
 })
@@ -30,6 +31,9 @@ export class SignupComponent implements OnInit {
     private router = inject(Router);
     private fb = inject(FormBuilder);
     private seo = inject(SeoService);
+
+    captchaToken = signal<string | null>(null);
+    captcha = viewChild.required<TurnstileComponent>('captcha');
 
 
     ngOnInit(): void {
