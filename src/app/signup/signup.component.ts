@@ -66,6 +66,7 @@ export class SignupComponent implements OnInit {
                 .signup(
                     this.signupForm.value.email,
                     this.signupForm.value.password,
+                    this.captchaToken()!
                 )
                 .subscribe({
                     next: response => {
@@ -73,6 +74,7 @@ export class SignupComponent implements OnInit {
                         this.router.navigate(["/login"])
                     }, error: error => {
                         this.isLoading.set(false);
+                        this.captcha().reset()
                         this.errorMessage.set(error.error.message ?? 'Some Error Occured')
                     }
                 });

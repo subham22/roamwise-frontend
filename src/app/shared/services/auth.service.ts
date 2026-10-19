@@ -92,10 +92,11 @@ export class AuthService {
         this.token.set(null);
     }
 
-    signup(email: string, password: string): Observable<any> {
+    signup(email: string, password: string, captcha?: string): Observable<any> {
         return this.http.post(this.apiUrl + '/signup', {
             email: email,
-            password: password
+            password: password,
+            captcha
         })
     }
 }
