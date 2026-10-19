@@ -96,7 +96,7 @@ export class AuthService {
         return this.http.post(this.apiUrl + '/signup', {
             email: email,
             password: password,
-            captcha
+            captchaToken: captcha
         })
     }
 }
