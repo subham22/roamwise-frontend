@@ -46,7 +46,7 @@ export class ForgotPasswordComponent implements OnInit {
         if (this.forgotForm.valid) {
             this.isLoading.set(true);
            
-            this.service.forgotPassword(this.forgotForm.value.email, this.captchaToken()).subscribe({
+            this.service.forgotPassword(this.forgotForm.value.email, this.captchaToken()!).subscribe({
                 next: (response) => {
                     this.isLoading.set(false);
                      this.submitted.set(true);
