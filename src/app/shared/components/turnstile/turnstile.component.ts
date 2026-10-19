@@ -27,6 +27,7 @@ export class TurnstileComponent {
           callback: t => this.token.emit(t),
           'expired-callback': () => this.token.emit(null),
           'error-callback': () => this.token.emit(null),
+          theme: 'light'
         });
       });
     });
