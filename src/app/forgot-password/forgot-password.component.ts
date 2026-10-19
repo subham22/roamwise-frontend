@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { PublicNavComponent } from '../shared/components/public-nav/public-nav.component';
 import {
     FormControl,
@@ -9,10 +9,11 @@ import {
 import { AuthService } from '../shared/services/auth.service';
 import { RouterModule } from '@angular/router';
 import { SeoService } from '../shared/services/seo.service';
+import { TurnstileComponent } from '../shared/components/turnstile/turnstile.component';
 
 @Component({
     selector: 'app-forgot-password',
-    imports: [PublicNavComponent, ReactiveFormsModule, RouterModule],
+    imports: [PublicNavComponent, ReactiveFormsModule, RouterModule, TurnstileComponent],
     templateUrl: './forgot-password.component.html',
     styleUrl: './forgot-password.component.css',
 })
@@ -23,6 +24,10 @@ export class ForgotPasswordComponent implements OnInit {
 
     private service = inject(AuthService);
     private seo = inject(SeoService);
+
+    captchaToken = signal<string | null>(null);
+    captcha = viewChild.required<TurnstileComponent>('captcha');
+
 
     ngOnInit(): void {
         this.forgotForm = new FormGroup({
@@ -41,7 +46,7 @@ export class ForgotPasswordComponent implements OnInit {
         if (this.forgotForm.valid) {
             this.isLoading.set(true);
            
-            this.service.forgotPassword(this.forgotForm.value.email).subscribe({
+            this.service.forgotPassword(this.forgotForm.value.email, this.captchaToken()).subscribe({
                 next: (response) => {
                     this.isLoading.set(false);
                      this.submitted.set(true);

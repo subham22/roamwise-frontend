@@ -36,8 +36,8 @@ export class AuthService {
 
     userEmail = computed(() => this.token() ? this.extractEmail() : null);
 
-    forgotPassword(email: string): Observable<void> {
-        return this.http.post<void>('/auth/forgot-password', { email });
+    forgotPassword(email: string, captchaToken: string): Observable<void> {
+        return this.http.post<void>('/auth/forgot-password', { email, captchaToken });
     }
 
     resetPassword(token: string, newPassword: string): Observable<void> {
