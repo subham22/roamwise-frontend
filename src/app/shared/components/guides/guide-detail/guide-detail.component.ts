@@ -24,8 +24,7 @@ export class GuideDetailComponent {
     private seo = inject(SeoService);
 
     city = computed(() => this.guide.value()?.destination.split(',')[0])
-    notFound = computed(() => (this.guide.error() as HttpErrorResponse | undefined)?.status == 404)
-
+    notFound = computed(() => (this.guide.error() as HttpErrorResponse | undefined)?.status === 404);
     guide = httpResource<GuideDetail>(() => `/guides/${this.slug()}`);
 
     constructor() {
