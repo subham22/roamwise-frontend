@@ -77,4 +77,11 @@
             >
         </div>
     }
+    @if (notFound()) {
+    <main class="container not-found">
+        <h1>This guide isn't available</h1>
+        <p>It may have been replaced by a newer itinerary.</p>
+        <a routerLink="/guides" class="btn btn-primary">Browse all guides</a>
+    </main>
+    }
 </main>

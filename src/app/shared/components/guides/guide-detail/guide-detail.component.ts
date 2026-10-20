@@ -1,6 +1,6 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, RESPONSE_INIT } from '@angular/core';
 import { GuideDetail } from '../../../models/guide.interface';
-import { httpResource } from '@angular/common/http';
+import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { SeoService } from '../../../services/seo.service';
 import { PublicNavComponent } from '../../public-nav/public-nav.component';
 import { environment } from '../../../../../environments/environment';
@@ -18,8 +18,13 @@ export class GuideDetailComponent {
 
     apiUrl = environment.apiUrl;
 
+    private responseInit = inject(RESPONSE_INIT, {
+        optional: true
+    });
     private seo = inject(SeoService);
+
     city = computed(() => this.guide.value()?.destination.split(',')[0])
+    notFound = computed(() => (this.guide.error() as HttpErrorResponse | undefined)?.status == 404)
 
     guide = httpResource<GuideDetail>(() => `/guides/${this.slug()}`);
 
@@ -34,6 +39,18 @@ export class GuideDetailComponent {
                     image: this.heroImage(guide), // guide photo in link previews
                 });
                 this.seo.setJsonLd(this.buildJsonLd(guide)); // must come after update()
+            }
+
+            if (this.notFound()) {
+                this.seo.update({
+                    title: 'Guide not found',
+                    description: 'This itinerary is no longer available. Browse other India guides on Roamwise.',
+                    path: `/guides/${this.slug()}`,
+                    noindex: true,
+                });
+                if (this.responseInit) {
+                    this.responseInit.status = 404; // server only: real HTTP 404 for Google
+                }
             }
         });
     }

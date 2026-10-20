@@ -61,7 +61,6 @@ export class TripDetailComponent implements OnInit {
     showAddDayForm = signal(false);
     openActivityFormForDay = signal<number | null>(null);
     tripResource = httpResource<TripDetail>(() => '/trips/' + this.tripId());
-
     createDayForm!: FormGroup;
     createActivityForm!: FormGroup;
 
