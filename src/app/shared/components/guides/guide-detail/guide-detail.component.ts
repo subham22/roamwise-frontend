@@ -27,33 +27,33 @@ export class GuideDetailComponent {
     notFound = computed(() => (this.guide.error() as HttpErrorResponse | undefined)?.status === 404);
     guide = httpResource<GuideDetail>(() => `/guides/${this.slug()}`);
 
-    constructor() {
-        effect(() => {
-            const guide = this.guide.value();
-
-            if (this.notFound()) {
-                this.seo.update({
-                    title: 'Guide not found',
-                    description: 'This itinerary is no longer available. Browse other India guides on Roamwise.',
-                    path: `/guides/${this.slug()}`,
-                    noindex: true,
-                });
-                if (this.responseInit) {
-                    this.responseInit.status = 404; // server only: real HTTP 404 for Google
-                }
-            }
-            
-            if (guide) {
-                this.seo.update({
-                    title: guide.title,
-                    description: guide.metaDescription,
-                    path: `/guides/${guide.slug}`,
-                    image: this.heroImage(guide), // guide photo in link previews
-                });
-                this.seo.setJsonLd(this.buildJsonLd(guide)); // must come after update()
-            }
-        });
+   constructor() {
+  effect(() => {
+    if (this.notFound()) {
+      this.seo.update({
+        title: 'Guide not found',
+        description: 'This itinerary is no longer available. Browse other India guides on Roamwise.',
+        path: `/guides/${this.slug()}`,
+        noindex: true,
+      });
+      if (this.responseInit) {
+        this.responseInit.status = 404; // server only: real HTTP 404 for Google
+      }
+      return;
     }
+
+    if (this.guide.hasValue()) {
+      const guide = this.guide.value();
+      this.seo.update({
+        title: guide.title,
+        description: guide.metaDescription,
+        path: `/guides/${guide.slug}`,
+        image: this.heroImage(guide),
+      });
+      this.seo.setJsonLd(this.buildJsonLd(guide)); // must come after update()
+    }
+  });
+}
 
     // Turns the Google photo reference into a real, public image URL
     heroImage(g: GuideDetail): string {

@@ -1,7 +1,14 @@
 <app-public-nav></app-public-nav>
 
 <main class="container guide-detail-page">
-    @if (guide.isLoading()) {
+    @if (notFound()) {
+        <main class="container not-found">
+            <h1>This guide isn't available</h1>
+            <p>It may have been replaced by a newer itinerary.</p>
+            <a routerLink="/guides" class="btn btn-primary">Browse all guides</a>
+        </main>
+    }
+    @else if (guide.isLoading()) {
         <p class="muted">Loading guide…</p>
     } @else if (guide.error()) {
         <p class="muted">Guide not found.</p>
@@ -77,11 +84,5 @@
             >
         </div>
     }
-    @if (notFound()) {
-    <main class="container not-found">
-        <h1>This guide isn't available</h1>
-        <p>It may have been replaced by a newer itinerary.</p>
-        <a routerLink="/guides" class="btn btn-primary">Browse all guides</a>
-    </main>
-    }
+
 </main>
