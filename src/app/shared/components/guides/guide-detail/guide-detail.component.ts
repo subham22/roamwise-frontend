@@ -30,15 +30,6 @@ export class GuideDetailComponent {
     constructor() {
         effect(() => {
             const guide = this.guide.value();
-            if (guide) {
-                this.seo.update({
-                    title: guide.title,
-                    description: guide.metaDescription,
-                    path: `/guides/${guide.slug}`,
-                    image: this.heroImage(guide), // guide photo in link previews
-                });
-                this.seo.setJsonLd(this.buildJsonLd(guide)); // must come after update()
-            }
 
             if (this.notFound()) {
                 this.seo.update({
@@ -50,6 +41,16 @@ export class GuideDetailComponent {
                 if (this.responseInit) {
                     this.responseInit.status = 404; // server only: real HTTP 404 for Google
                 }
+            }
+            
+            if (guide) {
+                this.seo.update({
+                    title: guide.title,
+                    description: guide.metaDescription,
+                    path: `/guides/${guide.slug}`,
+                    image: this.heroImage(guide), // guide photo in link previews
+                });
+                this.seo.setJsonLd(this.buildJsonLd(guide)); // must come after update()
             }
         });
     }
