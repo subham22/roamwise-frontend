@@ -22,16 +22,18 @@ export class MapsLoaderService {
     }
 
     this.loadPromise = new Promise<void>((resolve, reject) => {
-      const script = this.document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsKey}&loading=async`;
-      script.async = true;
-
-      // With loading=async, onload only means the bootstrap is ready; load the libraries we use
-      script.onload = () =>
+      // With loading=async, script onload fires before google.maps.importLibrary exists;
+      // Google calls the named callback once the API is actually ready.
+      const callbackName = '__roamwiseMapsReady';
+      (window as unknown as Record<string, () => void>)[callbackName] = () =>
         Promise.all([
           google.maps.importLibrary('maps'),
           google.maps.importLibrary('marker'),
         ]).then(() => resolve(), reject);
+
+      const script = this.document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsKey}&loading=async&callback=${callbackName}`;
+      script.async = true;
 
       script.onerror = () => {
         this.loadPromise = undefined; // allow a retry on the next load() call
