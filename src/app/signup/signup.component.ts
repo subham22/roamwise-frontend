@@ -8,6 +8,7 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms';
+import { AnalyticsService } from '../shared/services/analytics.service';
 import { Router, RouterModule } from '@angular/router';
 import { PublicNavComponent } from '../shared/components/public-nav/public-nav.component';
 import { ValidationError } from '@angular/forms/signals';
@@ -29,6 +30,7 @@ export class SignupComponent implements OnInit {
 
     private authService = inject(AuthService);
     private router = inject(Router);
+    private analytics = inject(AnalyticsService);
     private fb = inject(FormBuilder);
     private seo = inject(SeoService);
 
@@ -71,6 +73,7 @@ export class SignupComponent implements OnInit {
                 .subscribe({
                     next: response => {
                         this.isLoading.set(false);
+                        this.analytics.event('sign_up', { method: 'email' });
                         this.router.navigate(["/login"])
                     }, error: error => {
                         this.isLoading.set(false);

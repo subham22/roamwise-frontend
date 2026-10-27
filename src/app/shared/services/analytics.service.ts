@@ -16,6 +16,13 @@ export class AnalyticsService {
 
     document = inject(DOCUMENT);
 
+    /** Custom GA4 event via the GTM dataLayer (browser only). */
+    event(name: string, params: Record<string, unknown> = {}) {
+        if (!isPlatformBrowser(this.platformId)) return;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: name, ...params });
+    }
+
     pageView() {
          if (!isPlatformBrowser(this.platformId)) return;
         window.dataLayer = window.dataLayer || [];

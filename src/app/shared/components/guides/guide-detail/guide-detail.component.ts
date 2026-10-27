@@ -7,6 +7,7 @@ import { environment } from '../../../../../environments/environment';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { TripService } from '../../../services/trip.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -26,6 +27,7 @@ export class GuideDetailComponent {
     private seo = inject(SeoService);
     private auth = inject(AuthService);
     private tripService = inject(TripService);
+    private analytics = inject(AnalyticsService);
     private router = inject(Router);
 
     isLoggedIn = this.auth.isLoggedIn;
@@ -33,6 +35,7 @@ export class GuideDetailComponent {
     copyError = signal('');
 
     customize(): void {
+        this.analytics.event('guide_customize', { guide: this.slug(), logged_in: this.isLoggedIn() });
         if (!this.isLoggedIn()) {
             this.tripService.setPendingCopy('guide', this.slug());
             this.router.navigate(['/signup']);

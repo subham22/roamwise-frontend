@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TripDraftService } from '../shared/services/trip-draft.service';
 import { TripService } from '../shared/services/trip.service';
+import { AnalyticsService } from '../shared/services/analytics.service';
 import { SeoService } from '../shared/services/seo.service';
 
 @Component({
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit{
 	private service = inject(AuthService);
 	private draftService = inject(TripDraftService);
 	private tripService = inject(TripService);
+	private analytics = inject(AnalyticsService);
 	private seo = inject(SeoService);
 
 	ngOnInit(): void {
@@ -51,6 +53,7 @@ export class LoginComponent implements OnInit{
 				next: response => {
 					this.errorMessage.set('');
 					this.service.setToken(response.token);
+					this.analytics.event('login', { method: 'email' });
 					this.isLoading.set(false);
 					const pendingCopy = this.tripService.takePendingCopy();
 					if (pendingCopy) {
