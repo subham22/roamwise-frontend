@@ -1,6 +1,8 @@
 import { Component, HostListener, inject, input, OnInit, signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../shared/services/auth.service';
+import { TripService } from '../shared/services/trip.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { TripDetail } from '../shared/models/trip.interface';
@@ -19,6 +21,30 @@ export class SharedTripComponent implements OnInit{
 
     selectedPhotoUrl = signal<string | null>(null);
     private seo = inject(SeoService)
+    private auth = inject(AuthService);
+    private tripService = inject(TripService);
+    private router = inject(Router);
+
+    isLoggedIn = this.auth.isLoggedIn;
+    copying = signal(false);
+    copyError = signal('');
+
+    copyTrip(): void {
+        if (!this.isLoggedIn()) {
+            this.tripService.setPendingCopy('shared', this.shareToken());
+            this.router.navigate(['/signup']);
+            return;
+        }
+        this.copying.set(true);
+        this.copyError.set('');
+        this.tripService.copySharedTrip(this.shareToken()).subscribe({
+            next: (tripId) => this.router.navigate(['/app/trips', tripId]),
+            error: () => {
+                this.copying.set(false);
+                this.copyError.set("Couldn't copy this trip. Please try again.");
+            },
+        });
+    }
 
     ngOnInit(): void {
       this.seo.update({

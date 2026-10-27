@@ -7,7 +7,7 @@
     <p class="status-text error-text">This link is invalid or the trip no longer exists.</p>
   }
 
-  @if (tripResource.value()) {
+  @if (tripResource.hasValue()) {
     <div class="shared-banner">
       <span class="brand-mark">↗</span> Roamwise — shared itinerary
     </div>
@@ -21,6 +21,17 @@
         </p>
       </div>
       <div class="trip-budget-badge">₹{{ tripResource.value()!.budget }}</div>
+    </div>
+    <div class="copy-cta">
+      <button type="button" class="btn btn-primary" (click)="copyTrip()" [disabled]="copying()">
+        {{ copying() ? 'Copying…' : 'Copy this trip' }}
+      </button>
+      <span class="copy-hint">
+        {{ isLoggedIn() ? 'Saves your own editable copy.' : 'Free account — make it yours, edit anything.' }}
+      </span>
+      @if (copyError()) {
+        <p class="copy-error" role="alert">{{ copyError() }}</p>
+      }
     </div>
     @if (tripResource.value()!.travelModeSuggestion) {
     <div class="travel-mode-note">

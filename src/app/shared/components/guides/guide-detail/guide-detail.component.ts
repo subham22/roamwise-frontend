@@ -34,7 +34,7 @@ export class GuideDetailComponent {
 
     customize(): void {
         if (!this.isLoggedIn()) {
-            this.tripService.setPendingGuideCopy(this.slug());
+            this.tripService.setPendingCopy('guide', this.slug());
             this.router.navigate(['/signup']);
             return;
         }
