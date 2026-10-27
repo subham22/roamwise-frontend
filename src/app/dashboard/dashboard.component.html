@@ -15,14 +15,14 @@
     <p class="status-text error-text">Couldn't load your trips. Try refreshing.</p>
   }
 
-  @if (tripsResource.value() && tripsResource.value()!.length === 0) {
+  @if (tripsResource.hasValue() && tripsResource.value().length === 0) {
     <div class="empty-state card">
       <p>You haven't planned any trips yet.</p>
       <button class="btn btn-primary" routerLink="/app/generate">Plan your first trip</button>
     </div>
   }
   <div class="trip-grid">
-    @for (trip of tripsResource.value(); track trip.tripId) {
+    @for (trip of (tripsResource.hasValue() ? tripsResource.value() : []); track trip.tripId) {
       <a class="trip-card card" [routerLink]="['/app/trips', trip.tripId]">
         <div class="trip-card-header">
           <span class="trip-destination">{{ trip.destination }}</span>
@@ -33,4 +33,20 @@
       </a>
     }
   </div>
+
+  @if (sharedResource.hasValue() && sharedResource.value().length > 0) {
+    <h2 class="shared-heading">Shared with you</h2>
+    <div class="trip-grid">
+      @for (trip of sharedResource.value(); track trip.tripId) {
+        <a class="trip-card card" [routerLink]="['/app/trips', trip.tripId]">
+          <div class="trip-card-header">
+            <span class="trip-destination">{{ trip.destination }}</span>
+            <span class="trip-budget">{{ trip.myRole === 'EDITOR' ? 'Can edit' : 'Can view' }}</span>
+          </div>
+          <p class="trip-origin">From {{ trip.origin }}</p>
+          <p class="trip-dates">{{ trip.startDate }} → {{ trip.endDate }}</p>
+        </a>
+      }
+    </div>
+  }
 </section>

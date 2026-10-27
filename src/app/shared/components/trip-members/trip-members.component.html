@@ -1,0 +1,60 @@
+<h3 id="people-title">People on this trip</h3>
+
+@if (members.hasValue()) {
+    <ul class="member-list">
+        @for (m of members.value(); track m.email) {
+            <li>
+                <span class="member-email">
+                    {{ m.email }}
+                    @if (m.email.toLowerCase() === myEmail()) { <span class="you">(you)</span> }
+                </span>
+                <span class="member-role">{{ roleLabel(m.role) }}</span>
+                @if (m.id !== null && (isOwner() || m.email.toLowerCase() === myEmail())) {
+                    <button type="button" class="link-btn" (click)="remove(m)">
+                        {{ m.email.toLowerCase() === myEmail() ? 'Leave' : 'Remove' }}
+                    </button>
+                }
+            </li>
+        }
+    </ul>
+} @else if (members.isLoading()) {
+    <p class="muted">Loading…</p>
+}
+
+@if (isOwner()) {
+    <form class="invite-form" (submit)="$event.preventDefault(); invite()">
+        <label for="invite-email">Invite by email</label>
+        <div class="invite-row">
+            <input
+                id="invite-email"
+                type="email"
+                autocomplete="off"
+                placeholder="friend@example.com"
+                [value]="email()"
+                (input)="email.set($any($event.target).value)"
+                [disabled]="inviting()"
+                required
+            />
+            <select
+                aria-label="Permission"
+                [value]="role()"
+                (change)="role.set($any($event.target).value)"
+                [disabled]="inviting()"
+            >
+                <option value="EDITOR">Can edit</option>
+                <option value="VIEWER">Can view</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="inviting() || !email().trim()">
+            {{ inviting() ? 'Sending…' : 'Send invite' }}
+        </button>
+        @if (sentTo()) {
+            <p class="ok" role="status">Invite sent to {{ sentTo() }}. They'll see the trip after signing in with that email.</p>
+        }
+        @if (error()) {
+            <p class="err" role="alert">{{ error() }}</p>
+        }
+    </form>
+} @else {
+    <p class="muted">Only the trip owner can invite people.</p>
+}

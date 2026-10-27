@@ -5,6 +5,21 @@ export interface TripResponse {
 	startDate: string;
 	endDate: string;
 	budget: number;
+	myRole?: TripRole;
+}
+
+export type TripRole = 'OWNER' | 'EDITOR' | 'VIEWER';
+
+export interface TripMember {
+	id: number | null; // null for the owner row
+	email: string;
+	role: TripRole;
+}
+
+export interface VoteSummary {
+	up: number;
+	down: number;
+	mine: -1 | 0 | 1;
 }
 
 export interface TripDetail {
@@ -21,6 +36,8 @@ export interface TripDetail {
 	budgetActivitiesPct: string;
 	budgetTransportPct: string;
 	travelModeSuggestion?: string;
+	myRole?: TripRole;
+	memberCount?: number;
 	
 }
 

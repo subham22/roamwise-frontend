@@ -17,9 +17,14 @@
                     {{ tripResource.value()!.endDate }}
                 </p>
             </div>
-            <button class="btn btn-ghost" (click)="openShareModal()">
-                🔗 Share
+            <button class="btn btn-ghost" (click)="showPeople.set(true)">
+                👥 People
             </button>
+            @if (isOwner()) {
+                <button class="btn btn-ghost" (click)="openShareModal()">
+                    🔗 Share
+                </button>
+            }
             <button class="btn btn-ghost" (click)="downloadPdf()">
                 📄 Export PDF
             </button>
@@ -29,12 +34,14 @@
             <div class="trip-budget-badge">
                 ₹{{ tripResource.value()!.budget }}
             </div>
+            @if (canEdit()) {
             <button class="btn btn-ghost" (click)="openChatModal()">
                 ✨ Edit with AI
             </button>
             <button class="btn btn-ghost" (click)="openReplanModal()">
                 💰 Adjust budget
             </button>
+            }
         </div>
         @if (tripResource.value()!.travelModeSuggestion) {
             <div class="travel-mode-note">
@@ -141,7 +148,7 @@
         <div class="days-list">
             <div class="add-day-section">
                 @if (!showAddDayForm()) {
-                    @if (!isPastTrip()) {
+                    @if (!isPastTrip() && canEdit()) {
                         <button
                             class="btn btn-ghost"
                             (click)="showAddDayForm.set(true)"
@@ -222,6 +229,7 @@
                             [tripId]="tripId()"
                             [dayId]="day.id"
                         ></app-day-weather>
+                        @if (canEdit()) {
                         <div class="day-actions">
                             <button class="btn-icon" (click)="onEditDay(day)">
                                 ✎
@@ -233,6 +241,7 @@
                                 ✕
                             </button>
                         </div>
+                        }
                     </div>
                     <app-day-map [day]="day"></app-day-map>
                     @if (day.activities.length === 0) {
@@ -258,7 +267,7 @@
                                     ⚠️ {{ issue.message }}
                                 </div>
                             }
-                            <div class="activity-row" cdkDrag>
+                            <div class="activity-row" cdkDrag [cdkDragDisabled]="!canEdit()">
                                 <div class="activity-content">
                                     @if (activity.photoReference) {
                                         <img
@@ -303,9 +312,17 @@
                                                     }}"
                                                 </p>
                                             }
+                                            @if (isGroupTrip()) {
+                                                <app-activity-vote
+                                                    [name]="activity.name"
+                                                    [summary]="voteFor(activity.id)"
+                                                    (vote)="onVote(activity.id, $event)"
+                                                />
+                                            }
                                         </div>
                                     </div>
                                 </div>
+                                @if (canEdit()) {
                                 <div class="activity-actions">
                                     <button
                                         class="btn-icon"
@@ -322,9 +339,11 @@
                                         ✕
                                     </button>
                                 </div>
+                                }
                             </div>
                         }
                     </div>
+                    @if (canEdit()) {
                     <div class="add-activity-section">
                         @if (openActivityFormForDay() !== day.id) {
                             <button
@@ -441,6 +460,7 @@
                             </form>
                         }
                     </div>
+                    }
                 </div>
             }
 
@@ -519,6 +539,24 @@
                 </div>
             }
         </div>
+        @if (showPeople()) {
+            <div class="photo-modal-backdrop" (click)="showPeople.set(false)">
+                <div
+                    class="share-modal-content"
+                    role="dialog"
+                    aria-labelledby="people-title"
+                    (click)="$event.stopPropagation()"
+                >
+                    <app-trip-members
+                        [tripId]="tripResource.value()!.tripId"
+                        [isOwner]="isOwner()"
+                        (changed)="onPeopleChanged()"
+                    />
+                    <button class="btn btn-ghost" (click)="showPeople.set(false)">Close</button>
+                </div>
+            </div>
+        }
+
         @if (showChatModal()) {
             <div class="photo-modal-backdrop" (click)="showChatModal.set(false)">
                 <div
