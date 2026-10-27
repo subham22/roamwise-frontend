@@ -481,3 +481,37 @@ app-day-map {
   font-size: var(--fs-sm);
   margin: 16px 0;
 }
+.chat-edit-modal textarea {
+    width: 100%;
+    resize: vertical;
+    font: inherit;
+    padding: 10px 12px;
+    border: 1px solid #d9d4cc;
+    border-radius: 12px;
+}
+
+.chat-label {
+    font-weight: 600;
+}
+
+.chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chat-suggestions .chip {
+    border: 1px solid #d9d4cc;
+    background: transparent;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.chat-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
