@@ -30,6 +30,17 @@
         <header class="guide-head">
             <h1>{{ g.title }}</h1>
             <p class="guide-sub">{{ g.destination }}</p>
+            <div class="customize-cta">
+                <button type="button" class="btn btn-primary" (click)="customize()" [disabled]="copying()">
+                    {{ copying() ? 'Copying…' : 'Customize this itinerary' }}
+                </button>
+                <span class="muted">
+                    {{ isLoggedIn() ? 'Saves a copy to your trips that you can edit.' : 'Free account — edit days, swap places, export to PDF.' }}
+                </span>
+                @if (copyError()) {
+                    <p class="copy-error" role="alert">{{ copyError() }}</p>
+                }
+            </div>
         </header>
 
         <div class="day-list">

@@ -49,3 +49,16 @@
   max-width: 460px;
   margin: 0 0 28px;
 }
+.customize-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-top: 16px;
+}
+
+.copy-error {
+    width: 100%;
+    margin: 0;
+    color: var(--color-error, #b42318);
+}
