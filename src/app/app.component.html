@@ -1,2 +1,5 @@
+@if (offline()) {
+  <div class="offline-banner" role="status">You're offline — showing trips saved on this device.</div>
+}
 <router-outlet />
 <app-toast></app-toast>
