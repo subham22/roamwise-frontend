@@ -4,6 +4,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TripDraftService } from '../shared/services/trip-draft.service';
+import { TripService } from '../shared/services/trip.service';
 import { SeoService } from '../shared/services/seo.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit{
 
 	private service = inject(AuthService);
 	private draftService = inject(TripDraftService);
+	private tripService = inject(TripService);
 	private seo = inject(SeoService);
 
 	ngOnInit(): void {
@@ -50,6 +52,14 @@ export class LoginComponent implements OnInit{
 					this.errorMessage.set('');
 					this.service.setToken(response.token);
 					this.isLoading.set(false);
+					const pendingGuide = this.tripService.takePendingGuideCopy();
+					if (pendingGuide) {
+						this.tripService.createTripFromGuide(pendingGuide).subscribe({
+							next: (tripId) => this.router.navigate(['/app/trips', tripId]),
+							error: () => this.router.navigate(['/app/dashboard']),
+						});
+						return;
+					}
 					const draft = this.draftService.getDraft();
 					if (draft) {
 						this.router.navigate(['/app/new-trip']);

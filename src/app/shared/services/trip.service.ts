@@ -9,6 +9,24 @@ import { HttpClient } from '@angular/common/http';
 export class TripService {
     private http = inject(HttpClient);
 
+    private static readonly PENDING_GUIDE_KEY = 'pendingGuideCopy';
+
+    /** Copies a published guide into the current user's trips; emits the new trip id. */
+    createTripFromGuide(slug: string): Observable<number> {
+        return this.http.post<number>(`/trips/from-guide/${encodeURIComponent(slug)}`, {});
+    }
+
+    /** Remembers a guide the visitor wanted to customize, so it can be copied right after login. */
+    setPendingGuideCopy(slug: string): void {
+        localStorage.setItem(TripService.PENDING_GUIDE_KEY, slug);
+    }
+
+    takePendingGuideCopy(): string | null {
+        const slug = localStorage.getItem(TripService.PENDING_GUIDE_KEY);
+        localStorage.removeItem(TripService.PENDING_GUIDE_KEY);
+        return slug;
+    }
+
     createTrip(request: CreateTripRequest): Observable<TripResponse> {
         return this.http.post<TripResponse>('/trips', request);
     }

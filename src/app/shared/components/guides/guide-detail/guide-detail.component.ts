@@ -1,10 +1,12 @@
-import { Component, computed, effect, inject, input, RESPONSE_INIT } from '@angular/core';
+import { Component, computed, effect, inject, input, RESPONSE_INIT, signal } from '@angular/core';
 import { GuideDetail } from '../../../models/guide.interface';
 import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { SeoService } from '../../../services/seo.service';
 import { PublicNavComponent } from '../../public-nav/public-nav.component';
 import { environment } from '../../../../../environments/environment';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { TripService } from '../../../services/trip.service';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -22,6 +24,30 @@ export class GuideDetailComponent {
         optional: true
     });
     private seo = inject(SeoService);
+    private auth = inject(AuthService);
+    private tripService = inject(TripService);
+    private router = inject(Router);
+
+    isLoggedIn = this.auth.isLoggedIn;
+    copying = signal(false);
+    copyError = signal('');
+
+    customize(): void {
+        if (!this.isLoggedIn()) {
+            this.tripService.setPendingGuideCopy(this.slug());
+            this.router.navigate(['/signup']);
+            return;
+        }
+        this.copying.set(true);
+        this.copyError.set('');
+        this.tripService.createTripFromGuide(this.slug()).subscribe({
+            next: (tripId) => this.router.navigate(['/app/trips', tripId]),
+            error: () => {
+                this.copying.set(false);
+                this.copyError.set("Couldn't copy this itinerary. Please try again.");
+            },
+        });
+    }
 
     city = computed(() => this.guide.value()?.destination.split(',')[0])
     notFound = computed(() => (this.guide.error() as HttpErrorResponse | undefined)?.status === 404);
