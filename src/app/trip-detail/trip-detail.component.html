@@ -495,6 +495,15 @@
                             >
                                 Copy link
                             </button>
+                            <a
+                                class="btn btn-ghost"
+                                [href]="whatsAppShareUrl()"
+                                target="_blank"
+                                rel="noopener"
+                                (click)="trackWhatsAppShare()"
+                            >
+                                Share on WhatsApp
+                            </a>
                         }
 
                         <button

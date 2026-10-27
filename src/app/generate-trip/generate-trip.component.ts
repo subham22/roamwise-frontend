@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TripService } from '../shared/services/trip.service';
 import { interval, switchMap, takeWhile } from 'rxjs';
 import { JobService } from '../shared/services/job.service';
+import { AnalyticsService } from '../shared/services/analytics.service';
 import { Router } from '@angular/router';
 import { PlaceAutocompleteComponent } from '../shared/components/place-autocomplete/place-autocomplete.component';
 import { SeoService } from '../shared/services/seo.service';
@@ -35,6 +36,7 @@ export class GenerateTripComponent implements OnInit {
     
     private tripService = inject(TripService);
     private jobService = inject(JobService);
+    private analytics = inject(AnalyticsService);
     private router = inject(Router);
     private seo  = inject(SeoService);
 
@@ -60,6 +62,7 @@ export class GenerateTripComponent implements OnInit {
     onSubmit() {
         if (this.tripForm.valid) {
             this.isGenerating.set(true);
+            this.analytics.event('trip_generate_start', { destination: this.tripForm.value.destination });
             this.tripService.generateTrip(this.tripForm.value).subscribe({
                 next: response => {
                    this.startPolling(response);
@@ -83,9 +86,11 @@ export class GenerateTripComponent implements OnInit {
                     this.progress.set(res.progress ?? null);
 
                     if (res.status === 'DONE' && res.resultTripId) {
+                        this.analytics.event('trip_generated', { destination: this.tripForm.value.destination });
                         this.isGenerating.set(false);
                         this.router.navigate(['/app/trips', res.resultTripId]);
                     } else if (res.status === 'FAILED') {
+                        this.analytics.event('trip_generate_failed', { destination: this.tripForm.value.destination });
                         this.isGenerating.set(false);
                         this.errorMessage.set(res.errorMessage ?? 'Generation failed');
                     }

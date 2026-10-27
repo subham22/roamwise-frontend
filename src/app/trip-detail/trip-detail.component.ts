@@ -30,12 +30,12 @@ import { DayService } from '../shared/services/day.service';
 import { ActivityService } from '../shared/services/activity.service';
 import { ActivityResponse } from '../shared/models/day.interface';
 import { DayWeatherComponent } from '../day-weather/day-weather.component';
-import { response } from 'express';
 import { environment } from '../../environments/environment';
 import { DayMapComponent } from '../shared/components/day-map/day-map.component';
 import { TripService } from '../shared/services/trip.service';
 import { FeasibilityIssue } from '../shared/models/activity.interface';
 import { SeoService } from '../shared/services/seo.service';
+import { AnalyticsService } from '../shared/services/analytics.service';
 
 @Component({
     selector: 'app-trip-detail',
@@ -84,6 +84,7 @@ export class TripDetailComponent implements OnInit {
     feasibilityByDay = signal<Map<number, FeasibilityIssue[]>>(new Map());
 
     private seo = inject(SeoService);
+    private analytics = inject(AnalyticsService);
 
     constructor() {
         effect(() => {
@@ -176,12 +177,22 @@ export class TripDetailComponent implements OnInit {
             next: (res) => {
                 this.shareUrl.set(res.shareUrl);
                 this.isSharing.set(false);
+                this.analytics.event('trip_share', { by_email: !!email });
             },
         });
     }
 
     copyShareLink() {
         navigator.clipboard.writeText(this.shareUrl()!);
+        this.analytics.event('trip_share_link', { channel: 'copy' });
+    }
+
+    whatsAppShareUrl(): string {
+        return 'https://wa.me/?text=' + encodeURIComponent('Check out my trip plan on Roamwise: ' + this.shareUrl());
+    }
+
+    trackWhatsAppShare() {
+        this.analytics.event('trip_share_link', { channel: 'whatsapp' });
     }
 
     ngOnInit(): void {
