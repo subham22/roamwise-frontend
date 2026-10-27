@@ -52,9 +52,9 @@ export class LoginComponent implements OnInit{
 					this.errorMessage.set('');
 					this.service.setToken(response.token);
 					this.isLoading.set(false);
-					const pendingGuide = this.tripService.takePendingGuideCopy();
-					if (pendingGuide) {
-						this.tripService.createTripFromGuide(pendingGuide).subscribe({
+					const pendingCopy = this.tripService.takePendingCopy();
+					if (pendingCopy) {
+						pendingCopy.subscribe({
 							next: (tripId) => this.router.navigate(['/app/trips', tripId]),
 							error: () => this.router.navigate(['/app/dashboard']),
 						});

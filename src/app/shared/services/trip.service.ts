@@ -9,22 +9,36 @@ import { HttpClient } from '@angular/common/http';
 export class TripService {
     private http = inject(HttpClient);
 
-    private static readonly PENDING_GUIDE_KEY = 'pendingGuideCopy';
+    private static readonly PENDING_COPY_KEY = 'pendingCopy';
 
     /** Copies a published guide into the current user's trips; emits the new trip id. */
     createTripFromGuide(slug: string): Observable<number> {
         return this.http.post<number>(`/trips/from-guide/${encodeURIComponent(slug)}`, {});
     }
 
-    /** Remembers a guide the visitor wanted to customize, so it can be copied right after login. */
-    setPendingGuideCopy(slug: string): void {
-        localStorage.setItem(TripService.PENDING_GUIDE_KEY, slug);
+    /** Copies a trip someone shared into the current user's trips; emits the new trip id. */
+    copySharedTrip(shareToken: string): Observable<number> {
+        return this.http.post<number>(`/trips/copy-shared/${encodeURIComponent(shareToken)}`, {});
     }
 
-    takePendingGuideCopy(): string | null {
-        const slug = localStorage.getItem(TripService.PENDING_GUIDE_KEY);
-        localStorage.removeItem(TripService.PENDING_GUIDE_KEY);
-        return slug;
+    /** Remembers what a logged-out visitor wanted to copy, so login can finish it. */
+    setPendingCopy(kind: 'guide' | 'shared', id: string): void {
+        localStorage.setItem(TripService.PENDING_COPY_KEY, JSON.stringify({ kind, id }));
+    }
+
+    /** Runs (and clears) a pending copy, or returns null when there is none. */
+    takePendingCopy(): Observable<number> | null {
+        const raw = localStorage.getItem(TripService.PENDING_COPY_KEY);
+        localStorage.removeItem(TripService.PENDING_COPY_KEY);
+        if (!raw) return null;
+        try {
+            const { kind, id } = JSON.parse(raw) as { kind: string; id: string };
+            if (kind === 'guide') return this.createTripFromGuide(id);
+            if (kind === 'shared') return this.copySharedTrip(id);
+        } catch {
+            // ignore a malformed entry
+        }
+        return null;
     }
 
     createTrip(request: CreateTripRequest): Observable<TripResponse> {
