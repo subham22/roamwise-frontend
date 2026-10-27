@@ -76,3 +76,44 @@
   color: var(--color-muted);
   font-size: var(--fs-sm);
 }
+.progress-steps {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto 0;
+    display: grid;
+    gap: 10px;
+    text-align: left;
+    width: fit-content;
+}
+
+.progress-steps li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-muted);
+}
+
+.progress-steps .step-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    font-size: 12px;
+}
+
+.progress-steps li.active {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.progress-steps li.done {
+    color: var(--color-text);
+}
+
+.progress-steps li.done .step-mark {
+    background: var(--color-text);
+    border-color: var(--color-text);
+    color: var(--color-surface);
+}

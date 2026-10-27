@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TripService } from '../shared/services/trip.service';
 import { interval, switchMap, takeWhile } from 'rxjs';
@@ -18,6 +18,16 @@ export class GenerateTripComponent implements OnInit {
     tripForm!: FormGroup;
     isGenerating = signal<boolean>(false);
     jobStatus = signal<string | null>(null)
+    progress = signal<string | null>(null);
+
+    // Must match the step messages ItineraryGenerationService reports
+    readonly steps = ['Finding the best places', 'Checking the weather', 'Planning your days', 'Saving your trip'];
+    currentStep = computed(() => {
+        const message = this.progress();
+        if (!message) return -1;
+        if (message.startsWith('Double-checking')) return 2; // retry happens during the AI step
+        return this.steps.findIndex((step) => message.startsWith(step));
+    });
     errorMessage = signal<string>('')
     today = new Date().toISOString().split('T')[0];
     
@@ -70,6 +80,7 @@ export class GenerateTripComponent implements OnInit {
             .subscribe({
                 next: (res) => {
                     this.jobStatus.set(res.status);
+                    this.progress.set(res.progress ?? null);
 
                     if (res.status === 'DONE' && res.resultTripId) {
                         this.isGenerating.set(false);
