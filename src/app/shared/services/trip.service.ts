@@ -54,6 +54,11 @@ export class TripService {
         );
     }
 
+    /** Free-text AI edit; returns a proposal to preview, applied with confirmReplan(). */
+    chatEdit(tripId: number, message: string): Observable<{ id: number; diff: string[] }> {
+        return this.http.post<{ id: number; diff: string[] }>(`/trips/${tripId}/chat-edit`, { message });
+    }
+
     confirmReplan(proposalId: number): Observable<void> {
         return this.http.post<void>(`/trips/replan/${proposalId}/confirm`, {});
     }

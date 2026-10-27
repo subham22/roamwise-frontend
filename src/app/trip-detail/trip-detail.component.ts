@@ -101,6 +101,63 @@ export class TripDetailComponent implements OnInit {
         });
     }
 
+    // "Edit with AI": free-text change -> preview diff -> apply (reuses the replan proposal flow)
+    showChatModal = signal(false);
+    chatMessage = signal('');
+    chatDiff = signal<string[] | null>(null);
+    chatProposalId = signal<number | null>(null);
+    isChatting = signal(false);
+    isApplyingChat = signal(false);
+    readonly chatSuggestions = [
+        'Make day 2 more relaxed',
+        'Add more local food spots',
+        'Swap one museum for something outdoors',
+        'Start every day after 9 am',
+    ];
+
+    openChatModal() {
+        this.showChatModal.set(true);
+        this.chatDiff.set(null);
+        this.chatProposalId.set(null);
+    }
+
+    onChatPropose() {
+        const message = this.chatMessage().trim();
+        if (!message || this.isChatting()) return;
+        this.isChatting.set(true);
+        this.analytics.event('trip_chat_edit', { length: message.length });
+        this.tripService.chatEdit(Number(this.tripId()), message).subscribe({
+            next: (res) => {
+                this.chatDiff.set(res.diff);
+                this.chatProposalId.set(res.id);
+                this.isChatting.set(false);
+            },
+            error: () => this.isChatting.set(false),
+        });
+    }
+
+    onChatApply() {
+        const id = this.chatProposalId();
+        if (!id) return;
+        this.isApplyingChat.set(true);
+        this.tripService.confirmReplan(id).subscribe({
+            next: () => {
+                this.isApplyingChat.set(false);
+                this.showChatModal.set(false);
+                this.chatMessage.set('');
+                this.chatDiff.set(null);
+                this.analytics.event('trip_chat_edit_applied');
+                this.tripResource.reload();
+            },
+            error: () => this.isApplyingChat.set(false),
+        });
+    }
+
+    onChatRetry() {
+        this.chatDiff.set(null);
+        this.chatProposalId.set(null);
+    }
+
     openReplanModal() {
         this.showReplanModal.set(true);
         this.replanDiff.set(null);

@@ -29,6 +29,9 @@
             <div class="trip-budget-badge">
                 ₹{{ tripResource.value()!.budget }}
             </div>
+            <button class="btn btn-ghost" (click)="openChatModal()">
+                ✨ Edit with AI
+            </button>
             <button class="btn btn-ghost" (click)="openReplanModal()">
                 💰 Adjust budget
             </button>
@@ -516,6 +519,72 @@
                 </div>
             }
         </div>
+        @if (showChatModal()) {
+            <div class="photo-modal-backdrop" (click)="showChatModal.set(false)">
+                <div
+                    class="share-modal-content chat-edit-modal"
+                    role="dialog"
+                    aria-labelledby="chat-edit-title"
+                    (click)="$event.stopPropagation()"
+                >
+                    <h3 id="chat-edit-title">Edit this trip with AI</h3>
+
+                    @if (!chatDiff()) {
+                        <label class="chat-label" for="chat-edit-input">What should change?</label>
+                        <textarea
+                            id="chat-edit-input"
+                            rows="3"
+                            maxlength="500"
+                            [disabled]="isChatting()"
+                            [value]="chatMessage()"
+                            (input)="chatMessage.set($any($event.target).value)"
+                            (keydown.control.enter)="onChatPropose()"
+                            placeholder="e.g. Make day 2 more relaxed and add a sunset spot"
+                        ></textarea>
+                        <div class="chat-suggestions">
+                            @for (s of chatSuggestions; track s) {
+                                <button type="button" class="chip" [disabled]="isChatting()" (click)="chatMessage.set(s)">
+                                    {{ s }}
+                                </button>
+                            }
+                        </div>
+                        <button
+                            class="btn btn-primary"
+                            (click)="onChatPropose()"
+                            [disabled]="isChatting() || !chatMessage().trim()"
+                        >
+                            {{ isChatting() ? 'Rewriting your plan…' : 'Preview changes' }}
+                        </button>
+                    } @else {
+                        @if (chatDiff()!.length === 0) {
+                            <p class="no-diff-text">
+                                No places were added or removed — the AI adjusted timings and notes only.
+                            </p>
+                        } @else {
+                            <ul class="replan-diff-list">
+                                @for (change of chatDiff(); track change) {
+                                    <li
+                                        [class.diff-added]="change.startsWith('Added')"
+                                        [class.diff-removed]="change.startsWith('Removed')"
+                                    >
+                                        {{ change }}
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        <div class="chat-actions">
+                            <button class="btn btn-primary" (click)="onChatApply()" [disabled]="isApplyingChat()">
+                                {{ isApplyingChat() ? 'Applying…' : 'Apply changes' }}
+                            </button>
+                            <button class="btn btn-ghost" (click)="onChatRetry()" [disabled]="isApplyingChat()">
+                                Try something else
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
         @if (showReplanModal()) {
             <div
                 class="photo-modal-backdrop"
