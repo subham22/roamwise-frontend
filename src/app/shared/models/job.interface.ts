@@ -3,4 +3,5 @@ export interface JobStatusResponse {
 	status: string;
 	resultTripId: number;
 	errorMessage: string;
+	progress?: string | null;
 }

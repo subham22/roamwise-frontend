@@ -61,9 +61,17 @@
     <div class="card generating-state">
       <div class="spinner"></div>
       <h2>Building your itinerary...</h2>
-      <p class="status-text">
-        {{ jobStatus() === 'RUNNING' ? 'AI is planning your days and activities' : 'Starting generation' }}
+      <p class="status-text" aria-live="polite">
+        {{ progress() ?? (jobStatus() === 'RUNNING' ? 'AI is planning your days and activities' : 'Starting generation') }}
       </p>
+      <ol class="progress-steps">
+        @for (step of steps; track step; let i = $index) {
+          <li [class.done]="i < currentStep()" [class.active]="i === currentStep()">
+            <span class="step-mark" aria-hidden="true">{{ i < currentStep() ? '✓' : i + 1 }}</span>
+            {{ step }}
+          </li>
+        }
+      </ol>
       @if (errorMessage()) {
         <p class="server-error">{{ errorMessage() }}</p>
       }
