@@ -35,11 +35,15 @@ import { DayMapComponent } from '../shared/components/day-map/day-map.component'
 import { TripService } from '../shared/services/trip.service';
 import { FeasibilityIssue } from '../shared/models/activity.interface';
 import { SeoService } from '../shared/services/seo.service';
+import { TripMembersComponent } from '../shared/components/trip-members/trip-members.component';
+import { ActivityVoteComponent } from '../shared/components/activity-vote/activity-vote.component';
+import { MemberService } from '../shared/services/member.service';
+import { VoteSummary } from '../shared/models/trip.interface';
 import { AnalyticsService } from '../shared/services/analytics.service';
 
 @Component({
     selector: 'app-trip-detail',
-    imports: [
+    imports: [TripMembersComponent, ActivityVoteComponent, 
         ReactiveFormsModule,
         DayWeatherComponent,
         CdkDrag,
@@ -61,6 +65,30 @@ export class TripDetailComponent implements OnInit {
     showAddDayForm = signal(false);
     openActivityFormForDay = signal<number | null>(null);
     tripResource = httpResource<TripDetail>(() => '/trips/' + this.tripId());
+
+    // group trips: role decides which controls show (the backend enforces the same rules)
+    private memberService = inject(MemberService);
+    myRole = computed(() => (this.tripResource.hasValue() ? this.tripResource.value().myRole : undefined) ?? 'OWNER');
+    canEdit = computed(() => this.myRole() !== 'VIEWER');
+    isOwner = computed(() => this.myRole() === 'OWNER');
+    isGroupTrip = computed(() => this.tripResource.hasValue() && (this.tripResource.value().memberCount ?? 0) > 0);
+    showPeople = signal(false);
+    votes = httpResource<Record<number, VoteSummary>>(() =>
+        this.isGroupTrip() ? `/trips/${this.tripId()}/votes` : undefined,
+    );
+
+    voteFor(activityId: number): VoteSummary | undefined {
+        return this.votes.hasValue() ? this.votes.value()[activityId] : undefined;
+    }
+
+    onVote(activityId: number, value: -1 | 0 | 1) {
+        this.memberService.vote(activityId, value).subscribe({ next: () => this.votes.reload() });
+    }
+
+    onPeopleChanged() {
+        this.tripResource.reload();
+        this.votes.reload();
+    }
     createDayForm!: FormGroup;
     createActivityForm!: FormGroup;
 

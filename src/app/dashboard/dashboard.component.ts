@@ -13,6 +13,7 @@ import { SeoService } from '../shared/services/seo.service';
 export class DashboardComponent {
 
     tripsResource = httpResource<TripResponse[]>(() => "/trips");
+    sharedResource = httpResource<TripResponse[]>(() => "/trips/shared-with-me");
 
     private seo = inject(SeoService).update({
       	title: 'Dashboard',

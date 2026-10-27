@@ -1,0 +1,13 @@
+.member-list { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 8px; }
+.member-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.member-email { flex: 1 1 180px; overflow-wrap: anywhere; }
+.you, .member-role, .muted { color: var(--color-muted); }
+.member-role { font-size: 14px; }
+.link-btn { background: none; border: none; color: #b42318; font: inherit; cursor: pointer; padding: 0; text-decoration: underline; }
+.invite-form { display: grid; gap: 8px; }
+.invite-form label { font-weight: 600; }
+.invite-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.invite-row input { flex: 1 1 200px; min-width: 0; padding: 10px 12px; border: 1px solid #d9d4cc; border-radius: 12px; font: inherit; }
+.invite-row select { padding: 10px 12px; border: 1px solid #d9d4cc; border-radius: 12px; font: inherit; background: #fff; }
+.ok { color: #1a7f37; margin: 0; }
+.err { color: #b42318; margin: 0; }
