@@ -90,6 +90,12 @@ export class AuthService {
         localStorage.removeItem('token');
         sessionStorage.removeItem('tripDraft')
         this.token.set(null);
+        // drop trips cached for offline use, so the next person on this device can't read them
+        if (typeof caches !== 'undefined') {
+            caches.keys()
+                .then((keys) => keys.filter((key) => key.includes(':data:')).forEach((key) => caches.delete(key)))
+                .catch(() => {});
+        }
     }
 
     signup(email: string, password: string, captcha?: string): Observable<any> {
