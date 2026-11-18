@@ -43,6 +43,10 @@
             </div>
         </header>
 
+        @if (g.travelInfo?.overview) {
+            <p class="guide-overview">{{ g.travelInfo!.overview }}</p>
+        }
+
         <div class="day-list">
             @for (day of g.days; track day.dayNo) {
                 <section class="day-block">
@@ -83,6 +87,51 @@
                 </section>
             }
         </div>
+
+        @if (g.travelInfo; as info) {
+            <section class="travel-info">
+                <h2>{{ city() }} travel tips: before you go</h2>
+                <h3>Best time to visit {{ city() }}</h3>
+                <p>{{ info.bestTimeToVisit }}</p>
+                <h3>How to reach {{ city() }}</h3>
+                <p>{{ info.howToReach }}</p>
+                <h3>Getting around</h3>
+                <p>{{ info.gettingAround }}</p>
+                <h3>{{ city() }} trip budget</h3>
+                <p>{{ info.budget }}</p>
+                @if (info.tips?.length) {
+                    <h3>Local tips</h3>
+                    <ul>
+                        @for (tip of info.tips; track $index) {
+                            <li>{{ tip }}</li>
+                        }
+                    </ul>
+                }
+            </section>
+
+            @if (info.faqs?.length) {
+                <section class="faq">
+                    <h2>{{ city() }} trip FAQs</h2>
+                    @for (faq of info.faqs; track $index) {
+                        <details>
+                            <summary>{{ faq.question }}</summary>
+                            <p>{{ faq.answer }}</p>
+                        </details>
+                    }
+                </section>
+            }
+        }
+
+        @if (g.related?.length) {
+            <section class="related">
+                <h2>More trips near {{ city() }}</h2>
+                <div class="related-grid">
+                    @for (r of g.related; track r.slug) {
+                        <app-guide-card [guide]="r" />
+                    }
+                </div>
+            </section>
+        }
 
         <div class="guide-cta">
             <h2>{{ city() }} Trip Planner: Make This Itinerary Your Own</h2>

@@ -6,7 +6,19 @@ export interface GuideDetail {
 	heroImageUrl: string;
 	days: GuideDayResponse[];
 	updatedAt?: string,
-	createdAt?: string
+	createdAt?: string,
+	travelInfo?: GuideTravelInfo | null,
+	related?: GuideSummary[]
+}
+
+export interface GuideTravelInfo {
+	overview: string;
+	bestTimeToVisit: string;
+	howToReach: string;
+	gettingAround: string;
+	budget: string;
+	tips?: string[];
+	faqs?: { question: string; answer: string }[];
 }
 
 export interface GuideDayResponse {

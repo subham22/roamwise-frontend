@@ -9,10 +9,11 @@ import { AuthService } from '../../../services/auth.service';
 import { TripService } from '../../../services/trip.service';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { NgOptimizedImage } from '@angular/common';
+import { GuideCardComponent } from '../../guide-card/guide-card.component';
 
 @Component({
     selector: 'app-guide-detail',
-    imports: [PublicNavComponent, RouterModule, NgOptimizedImage],
+    imports: [PublicNavComponent, RouterModule, NgOptimizedImage, GuideCardComponent],
     templateUrl: './guide-detail.component.html',
     styleUrl: './guide-detail.component.css',
 })
@@ -141,6 +142,17 @@ export class GuideDetailComponent {
                         },
                     ],
                 },
+                ...(g.travelInfo?.faqs?.length
+                    ? [{
+                        '@type': 'FAQPage',
+                        '@id': `${pageUrl}#faq`,
+                        mainEntity: g.travelInfo.faqs.map((f) => ({
+                            '@type': 'Question',
+                            name: f.question,
+                            acceptedAnswer: { '@type': 'Answer', text: f.answer },
+                        })),
+                    }]
+                    : []),
             ],
         };
     }
