@@ -62,3 +62,18 @@
     margin: 0;
     color: var(--color-error, #b42318);
 }
+
+.guide-overview { font-size: 17px; line-height: 1.7; margin: 0 0 40px; }
+
+.travel-info, .faq, .related { margin-top: 48px; }
+.travel-info h2, .faq h2, .related h2 { font-size: 24px; letter-spacing: -.5px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--color-line); }
+.travel-info h3 { font-size: 17px; margin: 22px 0 6px; }
+.travel-info p, .travel-info li, .faq p { color: var(--color-muted); font-size: 15px; line-height: 1.7; }
+.travel-info ul { padding-left: 20px; display: grid; gap: 6px; }
+
+.faq details { border-bottom: 1px solid var(--color-line); padding: 14px 0; }
+.faq summary { cursor: pointer; font-weight: 700; font-size: 16px; }
+.faq details p { margin-top: 8px; }
+
+.related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+@media (max-width: 640px) { .related-grid { grid-template-columns: 1fr; } }
