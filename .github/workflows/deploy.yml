@@ -2,6 +2,7 @@ name: Deploy frontend
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -43,4 +44,6 @@ jobs:
             cd roamwise-infra && git checkout -q main && git pull -q
             docker compose pull frontend
             docker compose up -d
+            # Caddyfile is a single-file bind mount: after git pull the container still sees the old file
+            git diff --quiet HEAD@{1} HEAD -- Caddyfile 2>/dev/null || docker compose up -d --force-recreate caddy
             docker image prune -f
