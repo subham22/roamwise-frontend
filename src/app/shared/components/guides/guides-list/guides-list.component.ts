@@ -1,3 +1,4 @@
+import { PublicFooterComponent } from '../../public-footer/public-footer.component';
 import { Component, inject } from '@angular/core';
 import { PublicNavComponent } from '../../public-nav/public-nav.component';
 import { GuideSummary } from '../../../models/guide.interface';
@@ -9,7 +10,7 @@ import { GuideCardComponent } from '../../guide-card/guide-card.component';
 
 @Component({
   selector: 'app-guides-list',
-  imports: [PublicNavComponent, RouterModule, GuideCardComponent],
+  imports: [PublicFooterComponent, PublicNavComponent, RouterModule, GuideCardComponent],
   templateUrl: './guides-list.component.html',
   styleUrl: './guides-list.component.css',
 })

@@ -1,3 +1,4 @@
+import { PublicFooterComponent } from '../../public-footer/public-footer.component';
 import { Component, computed, effect, inject, input, RESPONSE_INIT, signal } from '@angular/core';
 import { GuideDetail } from '../../../models/guide.interface';
 import { HttpErrorResponse, httpResource } from '@angular/common/http';
@@ -13,7 +14,7 @@ import { GuideCardComponent } from '../../guide-card/guide-card.component';
 
 @Component({
     selector: 'app-guide-detail',
-    imports: [PublicNavComponent, RouterModule, NgOptimizedImage, GuideCardComponent],
+    imports: [PublicFooterComponent, PublicNavComponent, RouterModule, NgOptimizedImage, GuideCardComponent],
     templateUrl: './guide-detail.component.html',
     styleUrl: './guide-detail.component.css',
 })

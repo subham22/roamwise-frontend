@@ -1,3 +1,4 @@
+import { PublicFooterComponent } from '../shared/components/public-footer/public-footer.component';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { DropdownComponent } from '../shared/dropdown/dropdown.component';
 import { PublicNavComponent } from '../shared/components/public-nav/public-nav.component';
@@ -19,7 +20,7 @@ import { GuideCardComponent } from '../shared/components/guide-card/guide-card.c
 
 @Component({
     selector: 'app-landing',
-    imports: [
+    imports: [PublicFooterComponent, 
     DropdownComponent,
     PublicNavComponent,
     ReactiveFormsModule,
