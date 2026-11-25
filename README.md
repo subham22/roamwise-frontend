@@ -1,4 +1,17 @@
-# Frontend
+# Roamwise: AI trip planner for India
+
+**Live: [roamwise.live](https://roamwise.live)** · [Free India travel guides](https://roamwise.live/guides)
+
+Plan a day-by-day itinerary with maps, travel times and weather, or start from a ready-made guide like
+[Goa in 3 days](https://roamwise.live/guides/goa-india-3-days), [Jaipur in 3 days](https://roamwise.live/guides/jaipur-india-3-days),
+[Rishikesh in 2 days](https://roamwise.live/guides/rishikesh-india-2-days) or [Leh in 5 days](https://roamwise.live/guides/leh-india-5-days).
+
+Angular 21 (SSR, signals, PWA) · Spring Boot · PostgreSQL · Redis · OpenAI · Google Maps/Places.
+Backend: [roamwise-backend](https://github.com/subham22/roamwise-backend) · Infra: [roamwise-infra](https://github.com/subham22/roamwise-infra)
+
+---
+
+## Local development
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
 
