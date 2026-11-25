@@ -58,8 +58,8 @@
                         ) {
                             <div class="activity">
                                 <div class="activity-time">
-                                    {{ activity.startTime }} –
-                                    {{ activity.endTime }}
+                                    {{ activity.startTime.slice(0, 5) }} –
+                                    {{ activity.endTime.slice(0, 5) }}
                                 </div>
                                 <div class="activity-body">
                                     <h3>
